@@ -1,17 +1,19 @@
-import { useState } from "react";
-import { loginUser } from "../lib/api";
-import { LoginRequest } from "../types/auth";
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
+"use client";
 
+import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
+import { useRouter } from "next/navigation";
 interface LoginFormProps {
   onSwitchToSignup: () => void;
 }
 
 export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
-  const [form, setForm] = useState<LoginRequest>({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-
+  const { signIn } = useAuth();
+  const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -20,13 +22,17 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-    const res = await loginUser(form);
-    if (res.success) {
+    
+    try {
+      await signIn(form.email, form.password);
       setMessage("Login successful!");
-    } else {
-      setMessage(res.error?.message || res.message);
+       // redirect to dashboard
+       router.push('/');
+    } catch (error: any) {
+      setMessage(error.message || "Failed to login");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

@@ -1,11 +1,13 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TimelineMetadataForm from "./components/TimelineMetadatForm";
 import Modal from "./components/Modal";
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { CalendarIcon, ClockIcon, UserGroupIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { formatDistanceToNow, format } from 'date-fns';
+import { ClockIcon, UserGroupIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { format } from 'date-fns';
 import Navbar from "./components/Navbar";
+import { useAuth } from "../contexts/AuthContext";
+import api from "../lib/axios";
 
 interface Timeline {
   id: string;
@@ -21,60 +23,58 @@ interface Timeline {
   } | null;
   duration: number | null;
   createdAt: string;
-  segments: number;
+  isPublic: boolean;
+  enableScheduling: boolean;
+  version: string;
+  author: {
+    id: string;
+  };
+  isForked: boolean;
 }
 
-// Dummy data for timelines
-const dummyTimelines: Timeline[] = [
-  {
-    id: "1",
-    title: "Web Development Bootcamp",
-    description: "A comprehensive course covering HTML, CSS, JavaScript, and modern frameworks",
-    type: { id: "1", type: "Course" },
-    timeUnit: { id: "1", code: "weeks" },
-    duration: 12,
-    createdAt: "2024-03-15",
-    segments: 3
-  },
-  {
-    id: "2",
-    title: "Data Science Fundamentals",
-    description: "Learn Python, statistics, and machine learning basics",
-    type: { id: "1", type: "Course" },
-    timeUnit: { id: "1", code: "weeks" },
-    duration: 8,
-    createdAt: "2024-03-10",
-    segments: 2
-  },
-  {
-    id: "3",
-    title: "Mobile App Development",
-    description: "Build cross-platform mobile applications using React Native",
-    type: { id: "1", type: "Course" },
-    timeUnit: { id: "1", code: "weeks" },
-    duration: 10,
-    createdAt: "2024-03-05",
-    segments: 4
-  }
-];
-
 export default function Home() {
+  const { user } = useAuth();
   const [showTimelineForm, setShowTimelineForm] = useState(false);
-  const [timelines, setTimelines] = useState<Timeline[]>(dummyTimelines);
+  const [timelines, setTimelines] = useState<Timeline[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchUserTimelines = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const response = await api.get(`/timeline/user/${user.id}`);
+        setTimelines(response.data.data.timelines);
+      } catch (err) {
+        setError('Failed to load timelines');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserTimelines();
+  }, [user?.id]);
 
   const handleTimelineCreated = (newTimeline: Timeline) => {
-    const timelineWithSegments: Timeline = {
-      ...newTimeline,
-      segments: 0, // Initialize with 0 segments
-      createdAt: new Date().toISOString()
-    };
-    setTimelines([...timelines, timelineWithSegments]);
+    setTimelines([...timelines, newTimeline]);
     setShowTimelineForm(false);
   };
 
   const handleTimelineClick = (timelineId: string) => {
     window.location.href = `/timeline/${timelineId}`;
   };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -103,6 +103,12 @@ export default function Home() {
             <TimelineMetadataForm onTimelineCreated={handleTimelineCreated} />
           </Modal>
 
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">
+              {error}
+            </div>
+          )}
+
           {timelines.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {timelines.map((timeline) => (
@@ -123,9 +129,11 @@ export default function Home() {
                     <div className="flex gap-4 mb-2">
                       <div className="flex-1 bg-[var(--color-bg-purple-50)] rounded-lg px-4 py-3 flex flex-col items-center min-h-[64px] justify-center">
                         <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">
-                          <UserGroupIcon className="h-4 w-4" /> Segments
+                          <UserGroupIcon className="h-4 w-4" /> Status
                         </span>
-                        <span className="text-lg font-bold text-[var(--color-primary)]">{timeline.segments}</span>
+                        <span className="text-lg font-bold text-[var(--color-primary)]">
+                          {timeline.isPublic ? 'Public' : 'Private'}
+                        </span>
                       </div>
                       <div className="flex-1 bg-[var(--color-bg-purple-50)] rounded-lg px-4 py-3 flex flex-col items-center min-h-[64px] justify-center">
                         <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">

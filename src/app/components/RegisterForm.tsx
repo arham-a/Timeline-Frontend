@@ -1,30 +1,26 @@
+"use client";
+
 import { useState } from "react";
-import { registerUser, sendVerificationEmail } from "../lib/api";
-import { RegisterRequest } from "../types/auth";
-import { UserIcon } from "@heroicons/react/24/outline";
-import {
-  EnvelopeIcon,
-  LockClosedIcon,
-  UsersIcon,
-} from "@heroicons/react/16/solid";
-import { UserCircleIcon } from "@heroicons/react/20/solid";
+import { useAuth } from "../../contexts/AuthContext";
+import { UserCircleIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
 }
 
 export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
-  const [form, setForm] = useState<RegisterRequest>({
-    fname: "",
-    lname: "",
+  const [form, setForm] = useState({
+    name: "",
     email: "",
-    username: "",
     password: "",
+    username: "",
+    fname:"",
+    lname:""
   });
 
-  const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const { signUp } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,27 +28,20 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) {
-      setMessage("You must agree to the Terms and Conditions.");
-      return;
-    }
-
     setLoading(true);
     setMessage(null);
-    const res = await registerUser(form);
-    if (res.success && res.data?.userId) {
-      const emailRes = await sendVerificationEmail(res.data.userId);
-      setMessage(
-        emailRes.success ? "Verification email sent!" : emailRes.message
-      );
-    } else {
-      setMessage(res.error?.message || res.message);
+    
+    try {
+      await signUp(form.fname, form.lname,  form.email, form.password, form.username);
+      setMessage("Registration successful! Please check your email for verification.");
+    } catch (error: any) {
+      setMessage(error.message || "Failed to register");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const inputStyle =
-    "w-full pl-10 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]";
+  const inputStyle = "w-full pl-10 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]";
   const iconStyle = "w-5 h-5 absolute left-3 top-2.5 text-[var(--color-primary)]";
 
   return (
@@ -88,6 +77,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             required
           />
         </div>
+
         <div className="relative">
           <EnvelopeIcon className={iconStyle} />
           <input
@@ -99,8 +89,9 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             required
           />
         </div>
+
         <div className="relative">
-          <UserCircleIcon className={iconStyle} />
+          <EnvelopeIcon className={iconStyle} />
           <input
             type="text"
             name="username"
@@ -110,6 +101,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             required
           />
         </div>
+
         <div className="relative">
           <LockClosedIcon className={iconStyle} />
           <input
@@ -122,33 +114,17 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={() => setAgreed(!agreed)}
-            className="h-4 w-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
-            id="terms"
-          />
-          <label htmlFor="terms" className="text-sm text-[var(--color-text-secondary)]">
-            I agree to the{" "}
-            <a href="/terms" className="text-[var(--color-primary)] hover:underline">
-              Terms and Conditions
-            </a>
-          </label>
-        </div>
-
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-medium py-2 rounded-lg transition-colors"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
         >
-          {loading ? "Registering..." : "Create Account"}
+          {loading ? "Creating account..." : "Create account"}
         </button>
 
-        <p className="text-sm text-center mt-2 text-[var(--color-text-tertiary)]">
+        <p className="text-center text-sm text-[var(--color-text-tertiary)]">
           Already have an account?{" "}
-          <button 
+          <button
             type="button"
             onClick={onSwitchToLogin}
             className="text-[var(--color-primary)] hover:underline"

@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../../lib/axios';
 import { ClockIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
 interface SegmentFormProps {
@@ -38,7 +38,7 @@ export default function SegmentForm({ timelineId, onSegmentCreated }: SegmentFor
     const referencesArray = references.split(',').map(ref => ref.trim()).filter(ref => ref);
 
     try {
-      const response = await axios.post<SegmentResponse>('/api/segment/create', {
+      const response = await api.post<SegmentResponse>('/segment/create', {
         timelineId,
         title,
         description,

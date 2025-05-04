@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../lib/axios';
 import { ClockIcon, CalendarIcon, GlobeAltIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 
 // Define types for the metadata structure
@@ -88,7 +88,7 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
-        const res = await axios.get<MetadataResponse>('/api/timeline/metadata');
+        const res = await api.get<MetadataResponse>('/timeline/metadata');
         if (res.data.success) {
           setMetadata(res.data.data);
         } else {
@@ -114,7 +114,7 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
     };
   
     try {
-      const response = await axios.post<TimelineResponse>('/api/timeline/create', timelineData);
+      const response = await api.post<TimelineResponse>('/timeline/', timelineData);
   
       if (response.data.success) {
         setSuccessMessage('Timeline created successfully!');

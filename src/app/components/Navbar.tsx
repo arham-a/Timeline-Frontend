@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UserCircleIcon, Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon, HomeIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../../contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const navLinks = [
   { name: "Explore", href: "/explore", icon: GlobeAltIcon },
@@ -8,13 +10,24 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { signOut } = useAuth();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState({
-    isLoggedIn: true,
-    name: "Jane Doe",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+    isLoggedIn: false,
+    name: "",
+    avatar: ""
   });
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      router.push('/auth');
+    } else {
+      setUser(prev => ({ ...prev, isLoggedIn: true }));
+    }
+  }, [router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,10 +40,11 @@ export default function Navbar() {
   const handleLogout = () => {
     setUser({ ...user, isLoggedIn: false });
     setSidebarOpen(false);
+    signOut();
   };
 
   const handleLogin = () => {
-    window.location.href = "/login";
+    window.location.href = "/auth";
   };
 
   return (
@@ -51,7 +65,7 @@ export default function Navbar() {
             ))}
             {user.isLoggedIn ? (
               <div className="flex items-center gap-3 ml-4">
-                <img src={user.avatar} alt="avatar" className="h-8 w-8 rounded-full border-2 border-[var(--color-primary)] object-cover" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/1536px-Black_colour.jpg" alt="avatar" className="h-8 w-8 rounded-full border-2 border-[var(--color-primary)] object-cover" />
                 <span className="font-medium text-[var(--color-text-primary)]">{user.name}</span>
                 <button onClick={handleLogout} className="ml-2 flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
                   <ArrowLeftOnRectangleIcon className="h-5 w-5" /> Logout
