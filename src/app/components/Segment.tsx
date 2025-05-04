@@ -1,191 +1,160 @@
 "use client"
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from 'react';
+import axios from 'axios';
+import { ClockIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
-type Segment = {
-  unitNumber: number;
-  title: string;
-  topics: string;
-  goals: string;
-  references?: string;
-};
+interface SegmentFormProps {
+  timelineId: string;
+  onSegmentCreated: () => void;
+}
 
-const BASE_URL = "/api/segment";
-
-export default function SegmentForm() {
-  const [timelineId, setTimelineId] = useState("");
-  const [segments, setSegments] = useState<Segment[]>([
-    { unitNumber: 1, title: "", topics: "", goals: "", references: "" },
-  ]);
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<any>(null);
-
-  const handleChange = <K extends keyof Segment>(
-    index: number,
-    field: K,
-    value: Segment[K]
-  ) => {
-    const newSegments = [...segments];
-    newSegments[index][field] = value;
-    setSegments(newSegments);
+interface SegmentResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    references: string[];
+    timelineId: string;
+    createdAt: string;
+    updatedAt: string;
   };
-  
+}
 
-  const addSegment = () => {
-    setSegments([
-      ...segments,
-      { unitNumber: segments.length + 1, title: "", topics: "", goals: "", references: "" },
-    ]);
-  };
+export default function SegmentForm({ timelineId, onSegmentCreated }: SegmentFormProps) {
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [references, setReferences] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
-  const removeSegment = (index: number) => {
-    const updated = segments.filter((_, i) => i !== index);
-    setSegments(updated);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCreateSegment = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    const payload =
-      segments.length === 1
-        ? {
-            timelineId,
-            ...segments[0],
-          }
-        : {
-            timelineId,
-            segments,
-          };
+    const referencesArray = references.split(',').map(ref => ref.trim()).filter(ref => ref);
 
     try {
-      const res = await axios.post(
-        `${BASE_URL}${segments.length === 1 ? "/" : "/bulk"}`,
-        payload
-      );
-      setResponse(res.data);
+      const response = await axios.post<SegmentResponse>('/api/segment/create', {
+        timelineId,
+        title,
+        description,
+        startDate,
+        endDate,
+        references: referencesArray,
+      });
+
+      if (response.data.success) {
+        setSuccessMessage('Segment created successfully!');
+        setTitle('');
+        setDescription('');
+        setStartDate('');
+        setEndDate('');
+        setReferences('');
+        onSegmentCreated();
+      } else {
+        setError(response.data.message || 'Failed to create segment');
+      }
     } catch (err: any) {
-      setError(err.response?.data || { message: "Unknown error" });
-    } finally {
-      setLoading(false);
+      setError(err.response?.data?.message || 'Server error');
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Create Segment(s)</h2>
+    <div className="space-y-4">
+      {error && (
+        <div className="p-3 text-sm text-[var(--color-error)] bg-red-50 rounded-lg">{error}</div>
+      )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {successMessage && (
+        <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">{successMessage}</div>
+      )}
+
+      <form className="space-y-4" onSubmit={handleCreateSegment}>
         <div>
-          <label className="block font-medium">Timeline ID</label>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Title</label>
           <input
-            className="border p-2 w-full rounded"
-            value={timelineId}
-            onChange={(e) => setTimelineId(e.target.value)}
+            type="text"
+            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter segment title"
             required
           />
         </div>
 
-        {segments.map((segment, index) => (
-          <div key={index} className="border p-4 rounded-md space-y-4 bg-gray-50 relative">
-            <h3 className="font-semibold text-lg">Segment {index + 1}</h3>
-            {segments.length > 1 && (
-              <button
-                type="button"
-                className="absolute top-2 right-2 text-red-500"
-                onClick={() => removeSegment(index)}
-              >
-                ✖
-              </button>
-            )}
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Description</label>
+          <textarea
+            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter segment description"
+            rows={3}
+            required
+          />
+        </div>
 
-            <div>
-              <label className="block">Unit Number</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date</label>
+            <div className="mt-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+                <CalendarIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              </span>
               <input
-                type="number"
-                className="border p-2 w-full rounded"
-                value={segment.unitNumber}
-                onChange={(e) => handleChange(index, "unitNumber", +e.target.value)}
+                type="date"
+                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
                 required
-              />
-            </div>
-
-            <div>
-              <label className="block">Title</label>
-              <input
-                className="border p-2 w-full rounded"
-                value={segment.title}
-                onChange={(e) => handleChange(index, "title", e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block">Topics (comma separated)</label>
-              <input
-                className="border p-2 w-full rounded"
-                value={segment.topics}
-                onChange={(e) => handleChange(index, "topics", e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block">Goals (comma separated)</label>
-              <input
-                className="border p-2 w-full rounded"
-                value={segment.goals}
-                onChange={(e) => handleChange(index, "goals", e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block">References (comma separated, optional)</label>
-              <input
-                className="border p-2 w-full rounded"
-                value={segment.references || ""}
-                onChange={(e) => handleChange(index, "references", e.target.value)}
               />
             </div>
           </div>
-        ))}
 
-        <div className="flex gap-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={addSegment}
-          >
-            + Add Another Segment
-          </button>
-
-          <button
-            type="submit"
-            className="px-6 py-2 bg-green-600 text-white rounded"
-            disabled={loading}
-          >
-            {loading ? "Submitting..." : "Submit"}
-          </button>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date</label>
+            <div className="mt-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+                <CalendarIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              </span>
+              <input
+                type="date"
+                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+              />
+            </div>
+          </div>
         </div>
-      </form>
 
-      {/* Response / Error Handling */}
-      <div className="mt-6">
-        {response && (
-          <pre className="bg-green-50 border border-green-300 p-4 rounded text-sm overflow-x-auto">
-            ✅ Success: {JSON.stringify(response, null, 2)}
-          </pre>
-        )}
-        {error && (
-          <pre className="bg-red-50 border border-red-300 p-4 rounded text-sm overflow-x-auto">
-            ❌ Error: {JSON.stringify(error, null, 2)}
-          </pre>
-        )}
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">References (comma-separated)</label>
+          <div className="mt-1 relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+              <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
+            </span>
+            <input
+              type="text"
+              className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              value={references}
+              onChange={(e) => setReferences(e.target.value)}
+              placeholder="Enter references separated by commas"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-lg font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+        >
+          Create Segment
+        </button>
+      </form>
     </div>
   );
 }

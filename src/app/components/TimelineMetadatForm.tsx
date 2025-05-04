@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ClockIcon, CalendarIcon, GlobeAltIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 
 // Define types for the metadata structure
 interface TimelineType {
@@ -47,8 +48,8 @@ interface TimelineResponse {
     timeUnit: {
       id: string;
       code: string;
-    };
-    duration: number;
+    } | null;
+    duration: number | null;
     title: string;
     description: string;
     isGenerated: boolean;
@@ -62,10 +63,15 @@ interface TimelineResponse {
     createdAt: string;
     updatedAt: string;
     isForked: boolean;
+    segments: number;
   };
 }
 
-export default function TimelineMetadataForm() {
+interface TimelineMetadataFormProps {
+  onTimelineCreated: (timeline: TimelineResponse['data']) => void;
+}
+
+export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMetadataFormProps) {
   const [metadata, setMetadata] = useState<MetadataResponse['data'] | null>(null);
   const [selectedTypeId, setSelectedTypeId] = useState<string>('');
   const [selectedTimeUnitId, setSelectedTimeUnitId] = useState<string | null>(null);
@@ -108,22 +114,18 @@ export default function TimelineMetadataForm() {
     };
   
     try {
-      // Make the API request to create the timeline
       const response = await axios.post<TimelineResponse>('/api/timeline/create', timelineData);
   
       if (response.data.success) {
         setSuccessMessage('Timeline created successfully!');
-        // You can display the created timeline data or perform additional actions here
-        console.log(response.data.data);
+        onTimelineCreated(response.data.data);
       } else {
         setError(response.data.message || 'Failed to create timeline');
       }
     } catch (err: any) {
-      // Handle different error types based on the status and error code
       if (err.response) {
-        const { status, data } = err.response;
+        const { data } = err.response;
   
-        // Check for different error statuses and codes
         switch (data.error?.code) {
           case 'VALIDATION_ERROR':
             setError('Input validation failed');
@@ -144,128 +146,149 @@ export default function TimelineMetadataForm() {
             setError('Fork already exists');
             break;
           default:
-            // Handle other cases or generic error
             setError(data.message || 'Server error');
             break;
         }
       } else {
-        // If no response from the server, show a generic error message
         setError('Server error');
       }
     }
   };
-  
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 border rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Create Timeline</h2>
-
+    <div className="space-y-4">
       {error && (
-        <div className="mb-4 p-2 text-red-700 bg-red-100 rounded">{error}</div>
+        <div className="p-3 text-sm text-[var(--color-error)] bg-red-50 rounded-lg">{error}</div>
       )}
 
       {successMessage && (
-        <div className="mb-4 p-2 text-green-700 bg-green-100 rounded">{successMessage}</div>
+        <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">{successMessage}</div>
       )}
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium">Timeline Type</label>
-        <select
-          className="w-full mt-1 p-2 border rounded"
-          value={selectedTypeId}
-          onChange={(e) => setSelectedTypeId(e.target.value)}
+      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleCreateTimeline(); }}>
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Timeline Type</label>
+          <div className="mt-1 relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+              <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
+            </span>
+            <select
+              className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              value={selectedTypeId}
+              onChange={(e) => setSelectedTypeId(e.target.value)}
+            >
+              <option value="">Select type</option>
+              {metadata?.timelineTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {selectedType?.needsTimeUnit && (
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Time Unit</label>
+            <div className="mt-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+                <CalendarIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              </span>
+              <select
+                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                value={selectedTimeUnitId || ''}
+                onChange={(e) => setSelectedTimeUnitId(e.target.value || null)}
+              >
+                <option value="">Select unit</option>
+                {metadata?.timeUnits.map((unit) => (
+                  <option key={unit.id} value={unit.id}>
+                    {unit.code}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {selectedType?.needsDuration && (
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Duration</label>
+            <div className="mt-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+                <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              </span>
+              <input
+                type="number"
+                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="Enter duration"
+              />
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Title</label>
+          <input
+            type="text"
+            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter timeline title"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Description</label>
+          <textarea
+            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter timeline description"
+            rows={3}
+            required
+          />
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="h-4 w-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+              id="isPublic"
+            />
+            <label htmlFor="isPublic" className="text-sm text-[var(--color-text-secondary)]">
+              <GlobeAltIcon className="h-4 w-4 inline mr-1" />
+              Public Timeline
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="h-4 w-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
+              checked={enableScheduling}
+              onChange={(e) => setEnableScheduling(e.target.checked)}
+              id="enableScheduling"
+            />
+            <label htmlFor="enableScheduling" className="text-sm text-[var(--color-text-secondary)]">
+              <LockClosedIcon className="h-4 w-4 inline mr-1" />
+              Enable Scheduling
+            </label>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-lg font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
         >
-          <option value="">Select type</option>
-          {metadata?.timelineTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.type}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {selectedType?.needsTimeUnit && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Time Unit</label>
-          <select
-            className="w-full mt-1 p-2 border rounded"
-            value={selectedTimeUnitId || ''}
-            onChange={(e) => setSelectedTimeUnitId(e.target.value || null)}
-          >
-            <option value="">Select unit</option>
-            {metadata?.timeUnits.map((unit) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.code}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {selectedType?.needsDuration && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Duration</label>
-          <input
-            type="number"
-            className="w-full mt-1 p-2 border rounded"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            placeholder="Enter duration"
-          />
-        </div>
-      )}
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium">Title</label>
-        <input
-          type="text"
-          className="w-full mt-1 p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter timeline title"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium">Description</label>
-        <textarea
-          className="w-full mt-1 p-2 border rounded"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter timeline description"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            className="mr-2"
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
-          />
-          Public Timeline
-        </label>
-      </div>
-
-      <div className="mb-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            className="mr-2"
-            checked={enableScheduling}
-            onChange={(e) => setEnableScheduling(e.target.checked)}
-          />
-          Enable Scheduling
-        </label>
-      </div>
-
-      <button
-        className="w-full mt-4 bg-blue-600 text-white p-2 rounded"
-        onClick={handleCreateTimeline}
-      >
-        Create Timeline
-      </button>
+          Create Timeline
+        </button>
+      </form>
     </div>
   );
 }
