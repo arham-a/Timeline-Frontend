@@ -1,0 +1,27 @@
+:root {
+  /* Primary Colors */
+  --color-primary: #4b0082;
+  --color-primary-dark: #360061;
+  --color-primary-light: rgba(75, 0, 130, 0.5);
+  
+  /* Background Colors */
+  --color-bg-white: #ffffff;
+  --color-bg-purple-light: #f3e8ff;
+  --color-bg-purple-50: #faf5ff;
+  
+  /* Text Colors */
+  --color-text-primary: #171717;
+  --color-text-secondary: #4b5563;
+  --color-text-tertiary: #6b7280;
+  --color-text-muted: #9ca3af;
+  
+  /* Border Colors */
+  --color-border: #e5e7eb;
+  
+  /* State Colors */
+  --color-error: #dc2626;
+  --color-success: #059669;
+  
+  /* Shadow Colors */
+  --color-shadow: rgba(75, 0, 130, 0.5);
+} 
