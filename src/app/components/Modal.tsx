@@ -1,5 +1,7 @@
 "use client"
-import { useEffect } from 'react';
+
+import { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ModalProps {
@@ -10,83 +12,54 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div 
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300" 
-        onClick={onClose}
-        style={{
-          animation: isOpen ? 'fadeIn 0.3s ease-in-out' : 'fadeOut 0.3s ease-in-out'
-        }}
-      />
-      <div 
-        className="flex min-h-full items-center justify-center p-4 sm:p-6"
-        style={{
-          animation: isOpen ? 'slideIn 0.3s ease-in-out' : 'slideOut 0.3s ease-in-out'
-        }}
-      >
-        <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-[var(--color-shadow)]">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[var(--color-border)]">
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)]">{title}</h2>
-            <button
-              onClick={onClose}
-              className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1 hover:bg-[var(--color-bg-purple-50)] rounded-full"
+    <Transition.Root show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 z-10 overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
-          </div>
-          <div className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto">
-            {children}
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                <div className="absolute right-0 top-0 pr-4 pt-4">
+                  <button
+                    type="button"
+                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    onClick={onClose}
+                  >
+                    <span className="sr-only">Close</span>
+                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                  </button>
+                </div>
+                <div>
+                  <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-4">
+                    {title}
+                  </Dialog.Title>
+                  {children}
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
         </div>
-      </div>
-
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeOut {
-          from { opacity: 1; }
-          to { opacity: 0; }
-        }
-        @keyframes slideIn {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-          from { transform: translateY(0); opacity: 1; }
-          to { transform: translateY(20px); opacity: 0; }
-        }
-
-        @media (max-width: 640px) {
-          .modal-content {
-            margin: 0;
-            border-radius: 0;
-            min-height: 100vh;
-          }
-        }
-      `}</style>
-    </div>
+      </Dialog>
+    </Transition.Root>
   );
 } 

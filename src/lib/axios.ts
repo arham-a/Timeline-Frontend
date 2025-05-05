@@ -38,8 +38,7 @@ const getAPIClient = (ctx = undefined): AxiosInstance => {
         if (typeof window !== 'undefined') {
           // Clear invalid token
           localStorage.removeItem('accessToken');
-          // Redirect to auth page
-          window.location.href = '/auth';
+          delete api.defaults.headers.Authorization;
         }
       }
       return Promise.reject(error);

@@ -1,69 +1,14 @@
 "use client"
-import { useEffect, useState } from "react";
-import TimelineMetadataForm from "./components/TimelineMetadatForm";
-import Modal from "./components/Modal";
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { ClockIcon, UserGroupIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { format } from 'date-fns';
-import Navbar from "./components/Navbar";
-import { useAuth } from "../contexts/AuthContext";
-import api from "../lib/axios";
 
-interface Timeline {
-  id: string;
-  title: string;
-  description: string;
-  type: {
-    id: string;
-    type: string;
-  };
-  timeUnit: {
-    id: string;
-    code: string;
-  } | null;
-  duration: number | null;
-  createdAt: string;
-  isPublic: boolean;
-  enableScheduling: boolean;
-  version: string;
-  author: {
-    id: string;
-  };
-  isForked: boolean;
-}
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Navbar from './components/Navbar';
+import { useAuth } from '@/contexts/AuthContext';
 
-export default function Home() {
-  const { user } = useAuth();
-  const [showTimelineForm, setShowTimelineForm] = useState(false);
-  const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchUserTimelines = async () => {
-      if (!user?.id) return;
-      
-      try {
-        const response = await api.get(`/timeline/user/${user.id}`);
-        setTimelines(response.data.data.timelines);
-      } catch (err) {
-        setError('Failed to load timelines');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserTimelines();
-  }, [user?.id]);
-
-  const handleTimelineCreated = (newTimeline: Timeline) => {
-    setTimelines([...timelines, newTimeline]);
-    setShowTimelineForm(false);
-  };
-
-  const handleTimelineClick = (timelineId: string) => {
-    window.location.href = `/timeline/${timelineId}`;
-  };
+export default function HomePage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -79,89 +24,137 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16">
-        <div className="max-w-7xl mx-auto p-6">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">My Timelines</h1>
-              <p className="text-[var(--color-text-secondary)] mt-2">Create and manage your learning timelines</p>
-            </div>
-            <button
-              onClick={() => setShowTimelineForm(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
-            >
-              <PlusIcon className="h-5 w-5" />
-              Create New Timeline
-            </button>
-          </div>
-
-          <Modal
-            isOpen={showTimelineForm}
-            onClose={() => setShowTimelineForm(false)}
-            title="Create New Timeline"
-          >
-            <TimelineMetadataForm onTimelineCreated={handleTimelineCreated} />
-          </Modal>
-
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {timelines.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {timelines.map((timeline) => (
-                <div
-                  key={timeline.id}
-                  className="bg-white border border-[var(--color-primary-light)] rounded-2xl shadow-sm hover:shadow-lg transition-shadow cursor-pointer p-0 flex flex-col justify-between min-h-[320px] group"
-                >
-                  <div className="p-6 pb-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">{timeline.title}</h3>
-                    </div>
-                    <span className="inline-block px-3 py-1 mb-2 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-full text-xs font-semibold">
-                      {timeline.type.type}
-                    </span>
-                    <p className="text-[var(--color-text-secondary)] mb-4 text-sm leading-relaxed h-14 md:h-20 overflow-hidden text-ellipsis">
-                      {timeline.description}
-                    </p>
-                    <div className="flex gap-4 mb-2">
-                      <div className="flex-1 bg-[var(--color-bg-purple-50)] rounded-lg px-4 py-3 flex flex-col items-center min-h-[64px] justify-center">
-                        <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">
-                          <UserGroupIcon className="h-4 w-4" /> Status
-                        </span>
-                        <span className="text-lg font-bold text-[var(--color-primary)]">
-                          {timeline.isPublic ? 'Public' : 'Private'}
-                        </span>
-                      </div>
-                      <div className="flex-1 bg-[var(--color-bg-purple-50)] rounded-lg px-4 py-3 flex flex-col items-center min-h-[64px] justify-center">
-                        <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">
-                          <ClockIcon className="h-4 w-4" /> Duration
-                        </span>
-                        <span className="text-lg font-bold text-[var(--color-primary)]">
-                          {timeline.duration} {timeline.timeUnit?.code}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border-t border-[var(--color-border)] bg-[var(--color-bg-purple-50)] rounded-b-2xl px-6 py-3 flex items-center justify-between text-xs">
-                    <span className="text-[var(--color-text-tertiary)]">Created {format(new Date(timeline.createdAt), 'MM/dd/yyyy')}</span>
-                    <button
-                      onClick={() => handleTimelineClick(timeline.id)}
-                      className="text-[var(--color-primary)] font-semibold hover:underline flex items-center gap-1 group-hover:text-[var(--color-primary-dark)]"
+      <div className="min-h-screen bg-[var(--color-bg-purple-50)]">
+        <div className="relative isolate px-6 pt-14 lg:px-8">
+          <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-6xl">
+                Your Journey, Your Timeline
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-[var(--color-text-secondary)]">
+                Create, manage, and share your personal and professional timelines. 
+                Track your progress, set milestones, and collaborate with others.
+              </p>
+              <div className="mt-10 flex items-center justify-center gap-x-6">
+                {!user ? (
+                  <>
+                    <Link
+                      href="/auth"
+                      className="rounded-md bg-[var(--color-primary)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-dark)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
-                      View Details <ArrowRightIcon className="h-4 w-4" />
-                    </button>
+                      Get started
+                    </Link>
+                    <Link
+                      href="/timelines/explore"
+                      className="text-sm font-semibold leading-6 text-[var(--color-text-primary)]"
+                    >
+                      Explore timelines <span aria-hidden="true">→</span>
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/user"
+                    className="rounded-md bg-[var(--color-primary)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-dark)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    My Timelines
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white py-24 sm:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl lg:text-center">
+              <h2 className="text-base font-semibold leading-7 text-[var(--color-primary)] flex items-center justify-center gap-2">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Timeline Management
+              </h2>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-4xl">
+                Everything you need to manage your timelines
+              </p>
+              <p className="mt-6 text-lg leading-8 text-[var(--color-text-secondary)]">
+                Whether you're planning your career, tracking a project, or documenting history,
+                our platform provides all the tools you need.
+              </p>
+            </div>
+            <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+              <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+                <div className="relative flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-[var(--color-border)] hover:shadow-md transition-shadow">
+                  <div className="absolute -top-4 left-6">
+                    <div className="rounded-full bg-[var(--color-primary)] p-3 shadow-lg">
+                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </div>
                   </div>
+                  <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-[var(--color-text-primary)] mt-4">
+                    Create & Customize
+                  </dt>
+                  <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-[var(--color-text-secondary)]">
+                    <p className="flex-auto">
+                      Build beautiful, interactive timelines with custom segments, milestones, and goals.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-[var(--color-primary)]">
+                      <span className="text-sm font-medium">Learn more</span>
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </dd>
                 </div>
-              ))}
+                <div className="relative flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-[var(--color-border)] hover:shadow-md transition-shadow">
+                  <div className="absolute -top-4 left-6">
+                    <div className="rounded-full bg-[var(--color-primary)] p-3 shadow-lg">
+                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-[var(--color-text-primary)] mt-4">
+                    Collaborate & Share
+                  </dt>
+                  <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-[var(--color-text-secondary)]">
+                    <p className="flex-auto">
+                      Share your timelines with others and collaborate on shared projects.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-[var(--color-primary)]">
+                      <span className="text-sm font-medium">Learn more</span>
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </dd>
+                </div>
+                <div className="relative flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-[var(--color-border)] hover:shadow-md transition-shadow">
+                  <div className="absolute -top-4 left-6">
+                    <div className="rounded-full bg-[var(--color-primary)] p-3 shadow-lg">
+                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-[var(--color-text-primary)] mt-4">
+                    Track & Progress
+                  </dt>
+                  <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-[var(--color-text-secondary)]">
+                    <p className="flex-auto">
+                      Monitor your progress, update segments, and achieve your goals.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-[var(--color-primary)]">
+                      <span className="text-sm font-medium">Learn more</span>
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </dd>
+                </div>
+              </dl>
             </div>
-          ) : (
-            <div className="text-center py-12 bg-white rounded-xl shadow-[var(--color-shadow)]">
-              <p className="text-[var(--color-text-secondary)]">No timelines created yet. Click the button above to create one!</p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </>

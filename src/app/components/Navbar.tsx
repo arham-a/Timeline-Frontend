@@ -1,33 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UserCircleIcon, Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon, HomeIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-
-const navLinks = [
-  { name: "Explore", href: "/explore", icon: GlobeAltIcon },
-  { name: "My Timelines", href: "/", icon: HomeIcon },
-];
+import Link from 'next/link';
+import { Logo } from './Logo';
 
 export default function Navbar() {
-  const { signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState({
-    isLoggedIn: false,
-    name: "",
-    avatar: ""
-  });
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      router.push('/auth');
-    } else {
-      setUser(prev => ({ ...prev, isLoggedIn: true }));
-    }
-  }, [router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,88 +21,132 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    setUser({ ...user, isLoggedIn: false });
     setSidebarOpen(false);
     signOut();
   };
 
   const handleLogin = () => {
-    window.location.href = "/auth";
+    router.push("/auth");
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/70 backdrop-blur-md shadow" : "bg-transparent"}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-2 font-bold text-xl text-[var(--color-primary)]">
-            <GlobeAltIcon className="h-7 w-7" /> Timeline
-          </a>
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(link => (
-              <a key={link.name} href={link.href} className="flex items-center gap-1 text-[var(--color-text-primary)] hover:text-[var(--color-primary)] font-medium transition-colors">
-                <link.icon className="h-5 w-5" /> {link.name}
-              </a>
-            ))}
-            {user.isLoggedIn ? (
-              <div className="flex items-center gap-3 ml-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/1536px-Black_colour.jpg" alt="avatar" className="h-8 w-8 rounded-full border-2 border-[var(--color-primary)] object-cover" />
-                <span className="font-medium text-[var(--color-text-primary)]">{user.name}</span>
-                <button onClick={handleLogout} className="ml-2 flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
-                  <ArrowLeftOnRectangleIcon className="h-5 w-5" /> Logout
-                </button>
-              </div>
-            ) : (
-              <button onClick={handleLogin} className="ml-4 flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
-                <ArrowRightOnRectangleIcon className="h-5 w-5" /> Login
+      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-[var(--color-border)] backdrop-blur-sm bg-white/80 ${scrolled ? "bg-white/70 backdrop-blur-md shadow" : "bg-transparent"}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Logo />
+            
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="/explore" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <GlobeAltIcon className="h-5 w-5 mr-1.5" />
+                Explore
+              </Link>
+              {user ? (
+                <>
+                  <Link href="/user" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <HomeIcon className="h-5 w-5 mr-1.5" />
+                    My Timelines
+                  </Link>
+                  <div className="h-4 w-px bg-[var(--color-border)] mx-2" />
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                      <UserCircleIcon className="h-5 w-5 text-[var(--color-primary)]" />
+                      <span className="text-sm font-medium">{user.username}</span>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                    >
+                      <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1.5" />
+                      Sign Out
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-1.5" />
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                  >
+                    <UserCircleIcon className="h-5 w-5 mr-1.5" />
+                    Get Started
+                  </Link>
+                </>
+              )}
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
+              >
+                <Bars3Icon className="h-6 w-6" />
               </button>
-            )}
+            </div>
           </div>
-          {/* Hamburger for mobile */}
-          <button className="md:hidden p-2 rounded hover:bg-[var(--color-bg-purple-50)]" onClick={() => setSidebarOpen(true)}>
-            <Bars3Icon className="h-7 w-7 text-[var(--color-primary)]" />
-          </button>
         </div>
       </nav>
 
-      {/* Sidebar Drawer for Mobile/Tablet */}
+      {/* Mobile menu */}
       <div className={`fixed inset-0 z-50 transition-all duration-300 ${sidebarOpen ? "block" : "hidden"}`}>
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-        {/* Drawer */}
         <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-lg flex flex-col py-6 px-4">
           <div className="flex items-center justify-between mb-8">
-            <a href="/" className="flex items-center gap-2 font-bold text-xl text-[var(--color-primary)]">
-              <GlobeAltIcon className="h-7 w-7" /> Timeline
-            </a>
+            <Logo />
             <button onClick={() => setSidebarOpen(false)} className="p-2 rounded hover:bg-[var(--color-bg-purple-50)]">
               <XMarkIcon className="h-6 w-6 text-[var(--color-primary)]" />
             </button>
           </div>
-          <nav className="flex flex-col gap-4 flex-1">
-            {navLinks.map(link => (
-              <a key={link.name} href={link.href} className="flex items-center gap-2 text-[var(--color-text-primary)] hover:text-[var(--color-primary)] font-medium text-lg transition-colors" onClick={() => setSidebarOpen(false)}>
-                <link.icon className="h-5 w-5" /> {link.name}
-              </a>
-            ))}
-          </nav>
-          <div className="mt-auto pt-8 border-t border-[var(--color-border)]">
-            {user.isLoggedIn ? (
-              <div className="flex items-center gap-3">
-                <img src={user.avatar} alt="avatar" className="h-8 w-8 rounded-full border-2 border-[var(--color-primary)] object-cover" />
-                <span className="font-medium text-[var(--color-text-primary)]">{user.name}</span>
-                <button onClick={handleLogout} className="ml-2 flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
-                  <ArrowLeftOnRectangleIcon className="h-5 w-5" /> Logout
-                </button>
+          {user && (
+            <div className="mb-6 px-3 py-2 bg-[var(--color-bg-purple-50)] rounded-lg">
+              <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                <UserCircleIcon className="h-5 w-5 text-[var(--color-primary)]" />
+                <span className="text-sm font-medium">{user.username}</span>
               </div>
+            </div>
+          )}
+          <nav className="flex flex-col space-y-4">
+            <Link href="/explore" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              <GlobeAltIcon className="h-5 w-5 mr-1.5" />
+              Explore
+            </Link>
+            {user ? (
+              <>
+                <Link href="/user" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  <HomeIcon className="h-5 w-5 mr-1.5" />
+                  My Timelines
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center text-left px-3 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] rounded-md text-sm font-medium transition-colors"
+                >
+                  <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1.5" />
+                  Sign Out
+                </button>
+              </>
             ) : (
-              <button onClick={handleLogin} className="flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
-                <ArrowRightOnRectangleIcon className="h-5 w-5" /> Login
-              </button>
+              <>
+                <Link href="/auth" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-1.5" />
+                  Sign In
+                </Link>
+                <Link href="/auth" className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  <UserCircleIcon className="h-5 w-5 mr-1.5" />
+                  Get Started
+                </Link>
+              </>
             )}
-          </div>
+          </nav>
         </div>
       </div>
     </>

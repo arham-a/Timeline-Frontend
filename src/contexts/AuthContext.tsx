@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (fame: string, lname:string, email: string, password: string, username: string) => Promise<void>;
+  signUp: (fname: string, lname:string, email: string, password: string, username: string) => Promise<void>;
   signOut: () => void;
 }
 
@@ -31,56 +31,75 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const accessToken = localStorage.getItem('accessToken');
-        if (accessToken) {
-          // The axios interceptor will handle setting the Authorization header
-          const response = await api.get('/auth/me');
-          if (response.data) {
-            setUser(response.data);
-          }
+  const checkAuth = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+        const response = await api.get('/auth/me');
+        if (response.data && response.data.data) {
+          setUser(response.data.data);
         }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        // Clear invalid token
-        localStorage.removeItem('accessToken');
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      localStorage.removeItem('accessToken');
+      delete api.defaults.headers.Authorization;
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     checkAuth();
   }, []);
 
+  // Remove the automatic redirect effect
+  // We'll handle protected routes in the individual components
+
   async function signIn(email: string, password: string) {
     try {
+      setLoading(true);
       const response = await authService.login(email, password);
+      
+      localStorage.setItem('accessToken', response.data.accessToken);
+      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+      
       setUser({
         id: response.data.user.id,
         fname: response.data.user.fname,
         lname: response.data.user.lname,
         username: response.data.user.username,
       });
-      router.push('/');
+      
+      router.push('/dashboard');
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
   async function signUp(fname: string, lname:string, email: string, password: string, username: string) {
     try {
+      setLoading(true);
       await authService.register(fname, lname, email, password, username);
       router.push('/auth');
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
   function signOut() {
-    authService.logout();
+    setLoading(true);
+    localStorage.removeItem('accessToken');
+    delete api.defaults.headers.Authorization;
     setUser(null);
+    setLoading(false);
+    router.push('/');
   }
 
   return (

@@ -1,28 +1,81 @@
 import api from './axios';
 
-interface TimelineMetadata {
-  types: string[];
-  timeUnits: string[];
+export interface TimelineMetadata {
+  timelineTypes: {
+    id: string;
+    type: string;
+    needsTimeUnit: boolean;
+    needsDuration: boolean;
+    supportsScheduling: boolean;
+  }[];
+  timeUnits: {
+    id: string;
+    code: string;
+  }[];
 }
 
-interface Timeline {
+interface MetadataResponse {
+  data: TimelineMetadata;
+}
+
+export interface CreateTimelineDto {
+  title: string;
+  description: string;
+  typeId: string;
+  timeUnitId: string;
+  isPublic: boolean;
+  enableScheduling: boolean;
+  duration: number;
+}
+
+export interface Timeline {
   id: string;
   title: string;
   description: string;
-  type: string;
-  timeUnit: string;
-  startDate: string;
-  endDate: string;
-  userId: string;
+  type: {
+    id: string;
+    type: string;
+  };
+  timeUnit: {
+    id: string;
+    code: string;
+  } | null;
+  isForked: boolean;
+  isPublic: boolean;
+  enableScheduling: boolean;
+  duration: number | null;
   createdAt: string;
   updatedAt: string;
+  author: {
+    id: string;
+    username: string;
+  };
+  forkDetails?:{
+    originalTimelineId: string;
+    forkedVersion:string;
+  }
+  version: string;
+
+}
+
+interface UserTimelinesResponse {
+  data: {
+    timelines: Timeline[];
+    total: number;
+    page: number;
+    limit: number;
+  }
+}
+
+interface SingleTimelineResponse {
+  data: Timeline;
 }
 
 export const timelineService = {
   async getMetadata(): Promise<TimelineMetadata> {
     try {
-      const response = await api.get<TimelineMetadata>('/timeline/metadata');
-      return response.data;
+      const response = await api.get<MetadataResponse>('/timeline/metadata');
+      return response.data.data;
     } catch (error) {
       throw error;
     }
@@ -39,14 +92,24 @@ export const timelineService = {
   
   async getTimelineById(id: string): Promise<Timeline> {
     try {
-      const response = await api.get<Timeline>(`/timeline/${id}`);
-      return response.data;
+      const response = await api.get<SingleTimelineResponse>(`/timeline/${id}`);
+      return response.data.data;
     } catch (error) {
       throw error;
     }
   },
-  
-  async createTimeline(timelineData: Omit<Timeline, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<Timeline> {
+
+  async getUserTimelines(userId: string): Promise<Timeline[]> {
+    try {
+      const response = await api.get<UserTimelinesResponse>(`/timeline/user/${userId}`);
+      console.log("user timelines", response.data.data.timelines);
+      return response.data?.data.timelines;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async createTimeline(timelineData: CreateTimelineDto): Promise<Timeline> {
     try {
       const response = await api.post<Timeline>('/timeline', timelineData);
       return response.data;
@@ -67,6 +130,15 @@ export const timelineService = {
   async deleteTimeline(id: string): Promise<void> {
     try {
       await api.delete(`/timeline/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async forkTimeline(timelineId: string): Promise<Timeline> {
+    try {
+      const response = await api.post<{ success: boolean; message: string; data: Timeline }>(`/timeline/fork/${timelineId}`);
+      return response.data.data;
     } catch (error) {
       throw error;
     }

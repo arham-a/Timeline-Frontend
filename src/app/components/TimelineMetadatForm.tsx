@@ -28,8 +28,8 @@ interface MetadataResponse {
 
 interface CreateTimelineRequest {
   typeId: string;
-  timeUnitId: string | null;
-  duration: number | null;
+  timeUnitId: string | undefined;
+  duration: number | undefined;
   title: string;
   description: string;
   isPublic: boolean;
@@ -105,8 +105,8 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
   const handleCreateTimeline = async () => {
     const timelineData: CreateTimelineRequest = {
       typeId: selectedTypeId,
-      timeUnitId: selectedTimeUnitId,
-      duration: duration ? parseInt(duration) : null,
+      timeUnitId: selectedTimeUnitId || undefined,
+      duration: duration ? parseInt(duration) : undefined,
       title,
       description,
       isPublic,
