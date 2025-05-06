@@ -40,16 +40,17 @@ export default function EditTimelinePage({ params }: PageProps) {
 
   useEffect(() => {
     let mounted = true;
-
+    const timelineId = Array.isArray(params.id) ? params.id[0] : params.id;
+  
     const fetchData = async () => {
-      if (!params.id) return;
-
+      if (!timelineId) return;
+  
       try {
         const [metadataData, timelineData] = await Promise.all([
           timelineService.getMetadata(),
-          timelineService.getTimelineById(params.id),
+          timelineService.getTimelineById(timelineId),
         ]);
-
+  
         if (mounted) {
           setMetadata(metadataData);
           setFormData({
@@ -67,28 +68,31 @@ export default function EditTimelinePage({ params }: PageProps) {
         }
       }
     };
-
+  
     fetchData();
-
+  
     return () => {
       mounted = false;
     };
   }, [params.id]);
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
+    const timelineId = Array.isArray(params.id) ? params.id[0] : params.id;
+  
     try {
-      await timelineService.updateTimeline(params.id, formData);
-      router.push(`/timelines/${params.id}`);
+      await timelineService.updateTimeline(timelineId, formData);
+      router.push(`/timelines/${timelineId}`);
     } catch (err) {
       setError('Failed to update timeline');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
