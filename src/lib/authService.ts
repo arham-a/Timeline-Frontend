@@ -7,6 +7,7 @@ interface User {
   lname: string;
   username: string;
   email: string;
+  credits: number;
 }
 
 interface AuthResponse {

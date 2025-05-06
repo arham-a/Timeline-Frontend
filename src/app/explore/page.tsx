@@ -1,0 +1,282 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
+import { ArrowRightIcon, ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import Navbar from '@/app/components/Navbar';
+import { Button } from '../components/Button';
+import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
+import { timelineService, Timeline } from '@/lib/timelineService';
+
+interface TimelineSection {
+  timelines: Timeline[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+interface ExploreResponse {
+  success: boolean;
+  message: string;
+  data: {
+    ROADMAP: TimelineSection;
+    CHRONICLE: TimelineSection;
+  };
+}
+
+const getTypeIcon = (type: string) => {
+  switch (type.toUpperCase()) {
+    case 'ROADMAP':
+      return (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+      );
+    case 'CHRONICLE':
+      return (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      );
+    default:
+      return (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      );
+  }
+};
+
+const getTypeColor = (type: string): { bg: string; text: string; border: string; shadow: string } => {
+  switch (type.toUpperCase()) {
+    case 'ROADMAP':
+      return {
+        bg: 'bg-blue-50',
+        text: 'text-blue-700',
+        border: 'border-blue-200',
+        shadow: 'shadow-blue-100'
+      };
+    case 'CHRONICLE':
+      return {
+        bg: 'bg-rose-50',
+        text: 'text-rose-700',
+        border: 'border-rose-200',
+        shadow: 'shadow-rose-100'
+      };
+    default:
+      return {
+        bg: 'bg-[var(--color-primary-light)]',
+        text: 'text-[var(--color-primary)]',
+        border: 'border-[var(--color-primary-light)]',
+        shadow: 'shadow-[var(--color-primary-light)]'
+      };
+  }
+};
+
+const TimelineCard = ({ timeline }: { timeline: Timeline }) => {
+  const router = useRouter();
+  const typeColors = getTypeColor(timeline.type.type);
+
+  const handleTimelineClick = (timelineId: string) => {
+    router.push(`/timeline/${timelineId}`);
+  };
+
+  return (
+    <div
+      className={`bg-white border ${typeColors.border} rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer p-0 flex flex-col justify-between group overflow-hidden min-w-[350px]`}
+      onClick={() => handleTimelineClick(timeline.id)}
+    >
+      <div className="p-6 pb-3">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 ${typeColors.bg} ${typeColors.text} rounded-full text-xs font-medium mb-3`}>
+              {getTypeIcon(timeline.type.type)}
+              {timeline.type.type}
+            </div>
+            <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+              {timeline.title}
+            </h3>
+          </div>
+        </div>
+        <p className="text-[var(--color-text-secondary)] mb-4 text-sm leading-relaxed line-clamp-2">
+          {timeline.description}
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div className={`${typeColors.bg} rounded-lg px-4 py-3 flex flex-col items-center justify-center`}>
+            <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">
+              <UserGroupIcon className="h-4 w-4" /> Status
+            </span>
+            <span className={`text-sm font-semibold ${typeColors.text}`}>
+              {timeline.isPublic ? 'Public' : 'Private'}
+            </span>
+          </div>
+          {timeline.duration && (
+            <div className={`${typeColors.bg} rounded-lg px-4 py-3 flex flex-col items-center justify-center`}>
+              <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mb-1">
+                <ClockIcon className="h-4 w-4" /> Duration
+              </span>
+              <span className={`text-sm font-semibold ${typeColors.text}`}>
+                {timeline.duration} {mapTimelineTypeToMessage(timeline.timeUnit?.code || '', timeline.duration > 1)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className={`border-t ${typeColors.border} ${typeColors.bg} rounded-b-2xl px-6 py-3 flex items-center justify-between`}>
+        <span className="text-xs text-[var(--color-text-tertiary)]">
+          {format(new Date(timeline.createdAt), 'MMM dd, yyyy')}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
+        >
+          View Details
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const TimelineSlider = ({ title, timelines }: { title: string; timelines: Timeline[] }) => {
+  return (
+    <div className="mb-12">
+      <h2 className="text-2xl font-semibold text-[var(--color-text-primary)] mb-6">{title}</h2>
+      <div className="flex gap-6 overflow-x-auto pb-4 px-1">
+        {timelines.map((timeline) => (
+          <TimelineCard key={timeline.id} timeline={timeline} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SearchResults = ({ timelines }: { timelines: Timeline[] }) => {
+  return (
+    <div className="mb-12">
+      <h2 className="text-2xl font-semibold text-[var(--color-text-primary)] mb-6">Search Results</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {timelines.map((timeline) => (
+          <TimelineCard key={timeline.id} timeline={timeline} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default function Explore() {
+  const [data, setData] = useState<ExploreResponse | null>(null);
+  const [searchResults, setSearchResults] = useState<Timeline[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await timelineService.getExploreData();
+        setData(result);
+      } catch (err) {
+        console.error('Error fetching explore data:', err);
+        setError('Failed to load explore data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchValue.trim()) {
+      setSearchResults(null);
+      return;
+    }
+
+    try {
+      setIsSearching(true);
+      const result = await timelineService.searchTimelines(searchValue);
+      setSearchResults(result.data.timelines);
+    } catch (err) {
+      console.error('Error searching timelines:', err);
+      setError('Failed to search timelines');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+          <div className="text-red-600">{error}</div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">Explore Timelines</h1>
+              <p className="text-[var(--color-text-secondary)] mt-2">Discover and learn from timelines created by the community</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSearch} className="mb-8">
+            <div className="relative max-w-2xl">
+              <input
+                type="text"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search timelines..."
+                className="w-full px-4 py-3 pl-12 rounded-xl border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+              />
+              <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--color-text-tertiary)]" />
+              {isSearching && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-primary)]"></div>
+                </div>
+              )}
+            </div>
+          </form>
+
+          {searchResults ? (
+            <SearchResults timelines={searchResults} />
+          ) : (
+            data && (
+              <>
+                {data.data.ROADMAP.timelines.length > 0 && (
+                  <TimelineSlider title="Roadmaps" timelines={data.data.ROADMAP.timelines} />
+                )}
+                {data.data.CHRONICLE.timelines.length > 0 && (
+                  <TimelineSlider title="Chronicles" timelines={data.data.CHRONICLE.timelines} />
+                )}
+              </>
+            )
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

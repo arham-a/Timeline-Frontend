@@ -1,4 +1,5 @@
 import api from './axios';
+import { Segment } from './segmentService';
 
 export interface TimelineMetadata {
   timelineTypes: {
@@ -69,6 +70,43 @@ interface UserTimelinesResponse {
 
 interface SingleTimelineResponse {
   data: Timeline;
+}
+
+interface ExploreResponse {
+  success: boolean;
+  message: string;
+  data: {
+    ROADMAP: {
+      timelines: Timeline[];
+      total: number;
+      page: number;
+      limit: number;
+    };
+    CHRONICLE: {
+      timelines: Timeline[];
+      total: number;
+      page: number;
+      limit: number;
+    };
+  };
+}
+
+interface SearchResponse {
+  success: boolean;
+  message: string;
+  data: {
+    timelines: Timeline[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+interface GenerateSegmentRequest {
+  goal: string;
+  domain: string;
+  skillLevel: string;
+  targetAudience: string;
 }
 
 export const timelineService = {
@@ -142,5 +180,33 @@ export const timelineService = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+
+  async getExploreData(): Promise<ExploreResponse> {
+    try {
+      const response = await api.get<ExploreResponse>('/timeline/explore');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async searchTimelines(searchValue: string): Promise<SearchResponse> {
+    try {
+      const response = await api.get<SearchResponse>(`/timeline/search?value=${encodeURIComponent(searchValue)}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  generateSegments: async (timelineId: string, data: GenerateSegmentRequest): Promise<Segment[]> => {
+    try {
+      const response = await api.post<Segment[]>(`/segment/generate/${timelineId}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error generating segments:', error);
+      throw error;
+    }
+  },
 }; 

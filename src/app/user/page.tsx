@@ -168,12 +168,20 @@ export default function UserPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16">
-        <div className="max-w-7xl mx-auto p-6">
+      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">My Timelines</h1>
-              <p className="text-[var(--color-text-secondary)] mt-2">Create and manage your learning timelines</p>
+              <div className="flex items-center gap-4 mb-2">
+                <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">My Timelines</h1>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-[var(--color-primary)] rounded-full border border-[var(--color-primary-light)]">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-sm font-medium">{user?.credits}</span>
+                </div>
+              </div>
+              <p className="text-[var(--color-text-secondary)]">Create and manage your learning timelines</p>
             </div>
             {createTimelineCondition && (
               <Button

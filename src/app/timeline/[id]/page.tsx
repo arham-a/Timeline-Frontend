@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import { format } from 'date-fns';
-import { ClockIcon, UserGroupIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, UserGroupIcon, PlusIcon, MinusIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { Timeline, timelineService } from '../../../lib/timelineService';
 import { segmentService, Segment, SegmentCreateDto } from '@/lib/segmentService';
 import Link from 'next/link';
@@ -32,6 +32,13 @@ interface PageParams {
   id: string;
 }
 
+interface GenerateSegmentForm {
+  goal: string;
+  domain: string;
+  skillLevel: string;
+  targetAudience: string;
+}
+
 
 export default function TimelinePage() {
   const params = useParams();
@@ -44,7 +51,21 @@ export default function TimelinePage() {
   const [isForkModalOpen, setIsForkModalOpen] = useState(false);
   const [forkError, setForkError] = useState<string | null>(null);
   const { user } = useAuth();
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generateForm, setGenerateForm] = useState<GenerateSegmentForm>({
+    goal: '',
+    domain: '',
+    skillLevel: '',
+    targetAudience: ''
+  });
 
+  const handleInputChange = (field: keyof GenerateSegmentForm, value: string) => {
+    setGenerateForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -105,20 +126,54 @@ export default function TimelinePage() {
     );
   }
 
+  const handleGenerateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsGenerating(true);
+    try {
+      const data = await timelineService.generateSegments(params.id as string, generateForm);
+      setSegments(data);
+      setShowGenerateModal(false);
+      // Reset form after successful submission
+      setGenerateForm({
+        goal: '',
+        domain: '',
+        skillLevel: '',
+        targetAudience: ''
+      });
+    } catch (error) {
+      console.error('Error generating segments:', error);
+      setError('Failed to generate segments');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const RenderCreateButton = () => {
     if (timeline.author.id === user?.id) {
       return (
         <div className="text-center py-12">
           <h3 className="mt-2 text-sm font-medium text-gray-900">No segments</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Get started by adding a new segment.
+          <div className="mt-1 text-sm text-gray-500">
+            Get started by adding segments.
+          </div>
+          <div className="mt-4 space-x-4">
             <button 
               onClick={() => setRenderSegmentForm(true)} 
-              className="ml-2 text-indigo-600 hover:text-indigo-500"
+              className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
             >
-              Add Segments
+              <PlusIcon className="h-5 w-5 mr-2" />
+              Add Segments Manually
             </button>
-          </p>
+            {timeline.type.type === 'ROADMAP' && (
+              <button 
+                onClick={() => setShowGenerateModal(true)} 
+                className="inline-flex items-center px-4 py-2 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+              >
+                <SparklesIcon className="h-5 w-5 mr-2" />
+                Generate with AI
+              </button>
+            )}
+          </div>
         </div>
       );
     }
@@ -739,6 +794,148 @@ export default function TimelinePage() {
 
   const conditionForRenderingSegments = segments && (segments.length > 0 || timeline.author.id !== user?.id)
 
+  const GenerateModal = () => {
+    const [formData, setFormData] = useState({
+      goal: '',
+      domain: '',
+      skillLevel: '',
+      targetAudience: ''
+    });
+
+    const handleChange = (field: string, value: string) => {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsGenerating(true);
+      try {
+        const data = await timelineService.generateSegments(params.id as string, formData);
+        setSegments(data);
+        setShowGenerateModal(false);
+        setFormData({
+          goal: '',
+          domain: '',
+          skillLevel: '',
+          targetAudience: ''
+        });
+      } catch (error) {
+        console.error('Error generating segments:', error);
+        setError('Failed to generate segments');
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    if (!showGenerateModal) return null;
+
+    return (
+      <Dialog
+        open={showGenerateModal}
+        onClose={() => !isGenerating && setShowGenerateModal(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-md w-full rounded-2xl bg-white p-6">
+            <Dialog.Title className="text-lg font-medium text-[var(--color-text-primary)] mb-4">
+              Generate Segments with AI
+            </Dialog.Title>
+
+            {isGenerating ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)] mx-auto mb-4"></div>
+                <p className="text-[var(--color-text-secondary)]">
+                  Generating segments... This may take a few moments.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                    Goal
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.goal}
+                    onChange={(e) => handleChange('goal', e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    required
+                    placeholder="What do you want to achieve?"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                    Domain
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.domain}
+                    onChange={(e) => handleChange('domain', e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    required
+                    placeholder="e.g., Web Development, Data Science"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                    Skill Level
+                  </label>
+                  <select
+                    value={formData.skillLevel}
+                    onChange={(e) => handleChange('skillLevel', e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select skill level</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                    Target Audience
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.targetAudience}
+                    onChange={(e) => handleChange('targetAudience', e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    required
+                    placeholder="Who is this timeline for?"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowGenerateModal(false)}
+                    className="px-4 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors"
+                  >
+                    Generate Segments
+                  </button>
+                </div>
+              </form>
+            )}
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+    );
+  };
 
   return (
     <>
@@ -747,6 +944,7 @@ export default function TimelinePage() {
       {conditionForCreatingSegmentsCreateButton && <RenderCreateButton />}
       {conditionForRenderingSegments && <RenderSegments />}
       {renderSegmentForm && <RenderSegmentsForm />}
+      {showGenerateModal && <GenerateModal />}
     </>
   );
 } 

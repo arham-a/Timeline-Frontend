@@ -10,6 +10,7 @@ interface User {
   fname: string;
   lname: string;
   username: string;
+  credits: number;
 }
 
 interface AuthContextType {
@@ -18,6 +19,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (fname: string, lname:string, email: string, password: string, username: string) => Promise<void>;
   signOut: () => void;
+  updateCredits: (newCredits: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -55,8 +57,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     checkAuth();
   }, []);
 
-  // Remove the automatic redirect effect
-  // We'll handle protected routes in the individual components
+  const updateCredits = (newCredits: number) => {
+    setUser(prev => prev ? { ...prev, credits: newCredits } : null);
+  };
 
   async function signIn(email: string, password: string) {
     try {
@@ -71,6 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         fname: response.data.user.fname,
         lname: response.data.user.lname,
         username: response.data.user.username,
+        credits: response.data.user.credits,
       });
       
       router.push('/dashboard');
@@ -103,7 +107,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut, loading }}>
+    <AuthContext.Provider value={{ user, signIn, signUp, signOut, loading, updateCredits }}>
       {children}
     </AuthContext.Provider>
   );
