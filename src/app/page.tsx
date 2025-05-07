@@ -55,9 +55,9 @@ export default function HomePage() {
           className="min-h-screen bg-[var(--color-bg-purple-50)]"
         >
           {/* Hero Section */}
-          <div className="relative isolate px-6 pt-14 lg:px-8 ">
+          <div className="relative isolate px-6 pt-14 lg:px-8 bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))]">
             <motion.div
-              className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56"
+              className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 "
               variants={fadeInUp}
             >
               <div className="text-center">
@@ -151,7 +151,9 @@ export default function HomePage() {
                 ].map((item, index) => (
                   <motion.div
                     key={index}
-                    className="relative flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-[var(--color-border)] hover:shadow-md transition-shadow  "
+                    className="relative flex flex-col bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-light))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-light))] p-6 rounded-2xl shadow-sm border border-[var(--color-border)] transition-all duration-300"
+
+
                     variants={cardVariants}
                   >
                     <div className="absolute -top-4 left-6">
