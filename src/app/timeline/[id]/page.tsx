@@ -167,7 +167,7 @@ export default function TimelinePage() {
             {timeline.type.type === 'ROADMAP' && (
               <button 
                 onClick={() => setShowGenerateModal(true)} 
-                className="inline-flex items-center px-4 py-2 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-[var(--color-white)] text-[var(--color-primary)] border border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
               >
                 <SparklesIcon className="h-5 w-5 mr-2" />
                 Generate with AI
@@ -554,7 +554,11 @@ export default function TimelinePage() {
                   )}
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className={`inline-flex items-center gap-2 px-4 py-2 ${typeColors.bg} ${typeColors.text} rounded-full text-sm font-medium border ${typeColors.border} shadow-sm`}>
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-3"
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      color: 'var(--color-bg-white)',
+                     }}>
                     {getTypeIcon(timeline.type.type)}
                     {timeline.type.type}
                   </span>

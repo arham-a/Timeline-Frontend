@@ -88,9 +88,17 @@ export default function HomePage() {
                       </Link>
                       <Link
                         href="/timelines/explore"
-                        className="text-sm font-semibold leading-6 text-[var(--color-text-primary)] hover:underline"
+                        className="group relative inline-flex items-center gap-1 text-sm font-semibold leading-6 text-[var(--color-text-primary)] cursor-pointer"
                       >
-                        Explore timelines <span aria-hidden="true">→</span>
+                        <span className="relative group-hover:font-bold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
+                            Explore timelines
+                        </span>
+                        <span
+                           aria-hidden="true"
+                            className="transition-transform duration-300 group-hover:translate-x-1"
+                        >
+                           →
+                       </span>
                       </Link>
                     </>
                   ) : (
@@ -168,10 +176,12 @@ export default function HomePage() {
                     </dt>
                     <dd className="mt-4 flex flex-col text-base leading-7 text-[var(--color-text-secondary)]">
                       <p className="flex-auto">{item.desc}</p>
-                      <div className="mt-4 flex items-center gap-2 text-[var(--color-primary)]">
-                        <span className="text-sm font-medium">Learn more</span>
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <div className="group mt-4 flex items-center gap-2 text-[var(--color-primary)] cursor-pointer">
+                        <span className="relative text-sm font-medium group-hover:font-semibold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
+                           Learn more
+                        </span>
+                        <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
                     </dd>
