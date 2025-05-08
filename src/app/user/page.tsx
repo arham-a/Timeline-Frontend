@@ -289,10 +289,14 @@ export default function UserPage() {
             </span>
           </>
         ) : (
-          <div className="invisible">
-            <span className="text-xs mb-1">placeholder</span>
-            <span className="text-sm font-semibold">--</span>
-          </div>
+          <>
+            <span className="flex items-center gap-1 text-xs mb-1 text-[var(--color-text-secondary)]">
+              <ClockIcon className="h-4 w-4" /> Duration
+            </span>
+            <span className="text-sm font-medium text-[var(--color-text-tertiary)] italic">
+              No duration set
+            </span>
+          </>
         )}
       </div>
     </div>

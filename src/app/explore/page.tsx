@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { ArrowRightIcon, ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-import { Button } from '../components/Button';
 import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { timelineService, Timeline } from '@/lib/timelineService';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -145,10 +144,14 @@ const TimelineCard = ({ timeline }: { timeline: Timeline }) => {
                 </span>
               </>
             ) : (
-              <div className="invisible">
-                <span className="text-xs mb-1">placeholder</span>
-                <span className="text-sm font-semibold">--</span>
-              </div>
+              <>
+                <span className="flex items-center gap-1 text-xs mb-1 text-[var(--color-text-secondary)]">
+                  <ClockIcon className="h-4 w-4" /> Duration
+                </span>
+                <span className="text-sm font-medium text-[var(--color-text-tertiary)] italic">
+                  No duration set
+                </span>
+              </>
             )}
           </div>
         </div>
@@ -282,29 +285,10 @@ export default function Explore() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-background)]">
+      <div className="min-h-screen bg-[var(--color-background)] mt-[2rem]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">Explore Timelines</h1>
-            <div className="w-full sm:w-auto">
-              <form onSubmit={handleSearch} className="w-full">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    placeholder="Search timelines..."
-                    className="w-full px-4 py-3 pl-12 rounded-xl border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-                  />
-                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--color-text-tertiary)]" />
-                  {isSearching && (
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
-                  )}
-                </div>
-              </form>
-            </div>
+  
           </div>
           {searchResults ? (
             <SearchResults timelines={searchResults} />
