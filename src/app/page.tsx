@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from './components/Navbar';
@@ -88,7 +87,7 @@ export default function HomePage() {
                         Get started
                       </Link>
                       <Link
-                        href="/timelines/explore"
+                        href="/explore"
                         className="group relative inline-flex items-center gap-1 text-sm font-semibold leading-6 text-[var(--color-text-primary)] cursor-pointer"
                       >
                         <span className="relative group-hover:font-bold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 group-hover:after:w-full">

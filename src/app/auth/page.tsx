@@ -29,7 +29,7 @@ export default function AuthPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-purple-light)] p-4">
+      <div className="pt-[6rem] min-h-screen flex items-center justify-center bg-[var(--color-bg-purple-light)] p-4">
         <AuthTabs />
       </div>
       <Footer />

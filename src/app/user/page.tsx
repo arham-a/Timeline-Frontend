@@ -14,6 +14,7 @@ import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { Button } from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Footer from '../components/Footer';
+import TimelineCarousel from '../components/TimelineCarousel';
 
 const getTypeIcon = (type: string) => {
   switch (type.toUpperCase()) {
@@ -155,7 +156,6 @@ export default function UserPage() {
     );
   }
 
-
   const handleTimelineCreated = (newTimeline: Timeline) => {
     setTimelines([...timelines, newTimeline]);
     setShowTimelineForm(false);
@@ -211,137 +211,25 @@ export default function UserPage() {
           )}
 
           {timelines?.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-              {timelines.map((timeline) => {
-                const typeColors = getTypeColor(timeline.type.type);
-                return (
-                  <div
-                    key={timeline.id}
-                    className="rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col justify-between group overflow-hidden h-[300px] border bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-100))]"
-                    style={{
-                        borderColor: 'var(--color-bg-purple-100)',
-                       }}
-                         onClick={() => handleTimelineClick(timeline.id)}
->
-  <div className="p-6 pb-3 flex-grow overflow-hidden flex flex-col justify-between">
-    <div>
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-3"
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-bg-white)',
-            }}
-          >
-            {getTypeIcon(timeline.type.type)}
-            {timeline.type.type}
-          </div>
-          <h3 className="text-xl font-bold transition-colors line-clamp-2 group-hover:text-[var(--color-primary)] text-[var(--color-text-primary)]">
-            {timeline.title}
-          </h3>
-        </div>
-        {timeline.isForked && (
-          <div className="flex items-center gap-1 text-xs text-[var(--color-text-tertiary)]">
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-              />
-            </svg>
-            Forked
-          </div>
-        )}
-      </div>
-
-      <p className="mb-4 text-sm leading-relaxed line-clamp-2 text-[var(--color-text-secondary)]">
-        {timeline.description}
-      </p>
-    </div>
-
-    <div className="grid grid-cols-2 gap-4 mt-auto">
-      <div
-        className="rounded-lg px-4 py-3 flex flex-col items-center justify-center"
-        style={{ backgroundColor: 'var(--color-bg-purple-50)' }}
-      >
-        <span className="flex items-center gap-1 text-xs mb-1 text-[var(--color-text-secondary)]">
-          <UserGroupIcon className="h-4 w-4" /> Status
-        </span>
-        <span className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>
-          {timeline.isPublic ? 'Public' : 'Private'}
-        </span>
-      </div>
-
-      <div
-        className="rounded-lg px-4 py-3 flex flex-col items-center justify-center"
-        style={{ backgroundColor: 'var(--color-bg-purple-50)' }}
-      >
-        {timeline.duration ? (
-          <>
-            <span className="flex items-center gap-1 text-xs mb-1 text-[var(--color-text-secondary)]">
-              <ClockIcon className="h-4 w-4" /> Duration
-            </span>
-            <span className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>
-              {timeline.duration}{' '}
-              {mapTimelineTypeToMessage(timeline.timeUnit?.code || '', timeline.duration > 1)}
-            </span>
-          </>
-        ) : (
-          <>
-            <span className="flex items-center gap-1 text-xs mb-1 text-[var(--color-text-secondary)]">
-              <ClockIcon className="h-4 w-4" /> Duration
-            </span>
-            <span className="text-sm font-medium text-[var(--color-text-tertiary)] italic">
-              No duration set
-            </span>
-          </>
-        )}
-      </div>
-    </div>
-  </div>
-
-  <div
-    className="rounded-b-2xl px-6 py-3 flex items-center justify-between border-t"
-    style={{
-      backgroundColor: 'var(--color-bg-purple-50)',
-      borderColor: 'var(--color-bg-purple-100)',
-    }}
-  >
-    <span className="text-xs text-[var(--color-text-tertiary)]">
-      {format(new Date(timeline.createdAt), 'MMM dd, yyyy')}
-    </span>
-    <Link
-      href="#"
-      className="group relative inline-flex items-center gap-1 text-sm font-semibold leading-6 text-[var(--color-text-primary)] cursor-pointer"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleTimelineClick(timeline.id);
-      }}
-    >
-      <span className="relative group-hover:font-bold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
-        View Details
-      </span>
-      <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
-        →
-      </span>
-    </Link>
-  </div>
-                  </div>
-
-                );
-              })}
-            </div>
+            <TimelineCarousel timelines={timelines} title="Your Timelines" />
           ) : (
-            <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-[var(--color-border)]">
-              <div className="max-w-md mx-auto">
-                <svg className="h-12 w-12 mx-auto text-[var(--color-text-tertiary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <p className="mt-4 text-[var(--color-text-secondary)]">No timelines created yet.</p>
-                <p className="mt-2 text-sm text-[var(--color-text-tertiary)]">Click the button above to create your first timeline!</p>
-              </div>
+            <div className="text-center py-12">
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">
+                No Timelines Yet
+              </h2>
+              <p className="text-[var(--color-text-secondary)] mb-8">
+                Start creating your first timeline to get started
+              </p>
+              <button
+                onClick={() => router.push('/timeline/new')}
+                className="px-6 py-3 rounded-xl font-semibold transition-all duration-200"
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'var(--color-bg-white)',
+                }}
+              >
+                Create Timeline
+              </button>
             </div>
           )}
         </div>

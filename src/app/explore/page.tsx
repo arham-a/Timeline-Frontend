@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import TimelineCarousel from '../components/TimelineCarousel';
 
 import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { timelineService, Timeline } from '@/lib/timelineService';
@@ -221,8 +222,8 @@ export default function Explore() {
   const [searchResults, setSearchResults] = useState<Timeline[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -243,20 +244,21 @@ export default function Explore() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchValue.trim()) {
+    if (!searchQuery.trim()) {
       setSearchResults(null);
       return;
     }
 
+    setIsLoading(true);
     try {
-      setIsSearching(true);
-      const result = await timelineService.searchTimelines(searchValue);
+      const result = await timelineService.searchTimelines(searchQuery);
       setSearchResults(result.data.timelines);
-    } catch (err) {
-      console.error('Error searching timelines:', err);
+    } catch (error) {
+      console.error('Error searching timelines:', error);
+      setSearchResults(null);
       setError('Failed to search timelines');
     } finally {
-      setIsSearching(false);
+      setIsLoading(false);
     }
   };
 
@@ -285,21 +287,58 @@ export default function Explore() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-background)] mt-[2rem]">
+      <div className="min-h-screen bg-[var(--color-background)] mt-[6rem]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-  
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-[var(--color-text-primary)] mb-4">
+              Explore Timelines
+            </h1>
+            <p className="text-lg text-[var(--color-text-secondary)]">
+              Discover and explore timelines created by the community
+            </p>
           </div>
+
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search timelines..."
+                className="w-full px-4 py-3 pl-12 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all duration-200"
+                style={{
+                  backgroundColor: 'var(--color-bg-white)',
+                  borderColor: 'var(--color-bg-purple-100)',
+                }}
+              />
+              <MagnifyingGlassIcon
+                className="h-6 w-6 absolute left-4 top-1/2 transform -translate-y-1/2"
+                style={{ color: 'var(--color-text-tertiary)' }}
+              />
+              {isLoading && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-[var(--color-primary)] border-t-transparent"></div>
+                </div>
+              )}
+            </div>
+          </form>
+
           {searchResults ? (
-            <SearchResults timelines={searchResults} />
+            <div className="mt-8">
+              <TimelineCarousel timelines={searchResults} title="Search Results" />
+            </div>
           ) : (
             data && (
               <>
                 {data.data.ROADMAP.timelines.length > 0 && (
-                  <TimelineSlider title="Roadmaps" timelines={data.data.ROADMAP.timelines} />
+                  <div className="mb-12">
+                    <TimelineCarousel timelines={data.data.ROADMAP.timelines} title="Roadmaps" />
+                  </div>
                 )}
                 {data.data.CHRONICLE.timelines.length > 0 && (
-                  <TimelineSlider title="Chronicles" timelines={data.data.CHRONICLE.timelines} />
+                  <div className="mb-12">
+                    <TimelineCarousel timelines={data.data.CHRONICLE.timelines} title="Chronicles" />
+                  </div>
                 )}
               </>
             )
