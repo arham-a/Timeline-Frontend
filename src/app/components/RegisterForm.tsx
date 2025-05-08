@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserCircleIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
+import LoadingSpinner from './LoadingSpinner';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -117,9 +118,16 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center gap-2"
         >
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? (
+            <>
+              <LoadingSpinner size="sm" />
+              <span>Creating account...</span>
+            </>
+          ) : (
+            "Create account"
+          )}
         </button>
 
         <p className="text-center text-sm text-[var(--color-text-tertiary)]">

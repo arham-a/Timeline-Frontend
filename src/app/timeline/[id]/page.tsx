@@ -11,6 +11,8 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { mapTimelineTypeToMessage } from '@/app/utils/mapTimelineTypeToMessage';
 import { Dialog } from '@headlessui/react';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import Footer from '../../components/Footer';
 
 
 interface TimelineType {
@@ -109,7 +111,7 @@ export default function TimelinePage() {
       <>
         <Navbar />
         <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-lg">Loading...</div>
+          <LoadingSpinner size="lg" />
         </div>
       </>
     );
@@ -536,102 +538,107 @@ export default function TimelinePage() {
     
     return (
       <div className="bg-[var(--color-bg-purple-50)] pt-16">
-        <div className="max-w-7xl mx-auto p-6">
-          <div className="bg-white rounded-2xl shadow-sm p-8">
+        <div className="max-w-7xl mx-auto p-4 sm:p-6">
+          <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8">
             <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">{timeline.title}</h1>
+              {/* Header Section */}
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">{timeline.title}</h1>
+                    {timeline.isForked && timeline.forkDetails && (
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-bg-purple-50)] text-[var(--color-primary)] rounded-full text-sm font-medium">
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                          </svg>
+                          Forked v{timeline.forkDetails.forkedVersion}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[var(--color-text-secondary)] text-sm sm:text-base">{timeline.description}</p>
                   {timeline.isForked && timeline.forkDetails && (
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-bg-purple-50)] text-[var(--color-primary)] rounded-full text-sm font-medium">
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
-                        Forked v{timeline.forkDetails.forkedVersion}
-                      </span>
+                    <div className="flex items-center gap-2 text-sm text-[var(--color-text-tertiary)]">
+                      <span>Forked from timeline</span>
+                      <Link 
+                        href={`/timeline/${timeline.forkDetails.originalTimelineId}`}
+                        className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] hover:underline"
+                      >
+                        {timeline.forkDetails.originalTimelineId}
+                      </Link>
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-3"
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4 sm:mt-0">
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
                     style={{
                       backgroundColor: 'var(--color-primary)',
                       color: 'var(--color-bg-white)',
-                     }}>
+                    }}>
                     {getTypeIcon(timeline.type.type)}
                     {timeline.type.type}
                   </span>
                   {user && user.id !== timeline.author.id && timeline.isPublic && (
                     <button
                       onClick={() => setIsForkModalOpen(true)}
-                      className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
+                      className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors w-full sm:w-auto justify-center"
                     >
                       Fork Timeline
                     </button>
                   )}
                 </div>
               </div>
-              <p className="text-[var(--color-text-secondary)] mt-4">{timeline.description}</p>
-              {timeline.isForked && timeline.forkDetails && (
-                <div className="mt-4 flex items-center gap-2 text-sm text-[var(--color-text-tertiary)]">
-                  <span>Forked from timeline</span>
-                  <Link 
-                    href={`/timeline/${timeline.forkDetails.originalTimelineId}`}
-                    className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] hover:underline"
-                  >
-                    {timeline.forkDetails.originalTimelineId}
-                  </Link>
-                </div>
-              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-8">
               {timeline.duration ? (
-                <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-6 py-4">
+                <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-4 sm:px-6 py-4">
                   <div className="flex items-center gap-2 mb-2">
                     <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
                     <span className="text-[var(--color-text-secondary)]">Duration</span>
                   </div>
-                  <p className="text-xl font-semibold text-[var(--color-text-primary)]">
+                  <p className="text-base sm:text-lg lg:text-xl font-semibold text-[var(--color-text-primary)]">
                     {timeline.duration} {mapTimelineTypeToMessage(timeline.timeUnit?.code || '', timeline.duration > 1)}
                   </p>
                 </div>
               ) : null}
 
-              <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-6 py-4">
+              <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-4 sm:px-6 py-4">
                 <div className="flex items-center gap-2 mb-2">
                   <UserGroupIcon className="h-5 w-5 text-[var(--color-primary)]" />
                   <span className="text-[var(--color-text-secondary)]">Visibility</span>
                 </div>
-                <p className="text-xl font-semibold text-[var(--color-text-primary)]">
+                <p className="text-base sm:text-lg lg:text-xl font-semibold text-[var(--color-text-primary)]">
                   {timeline.isPublic ? 'Public' : 'Private'}
                 </p>
               </div>
 
-              <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-6 py-4">
+              <div className="bg-[var(--color-bg-purple-50)] rounded-lg px-4 sm:px-6 py-4">
                 <div className="flex items-center gap-2 mb-2">
                   <svg className="h-5 w-5 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   <span className="text-[var(--color-text-secondary)]">Author</span>
                 </div>
-                <p className="text-xl font-semibold text-[var(--color-text-primary)]">
+                <p className="text-base sm:text-lg lg:text-xl font-semibold text-[var(--color-text-primary)]">
                   {timeline?.author?.username}
                 </p>
               </div>
             </div>
 
+            {/* Footer Section */}
             <div className="border-t border-[var(--color-border)] pt-4">
-              <div className="flex justify-between text-sm text-[var(--color-text-tertiary)]">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:justify-between text-sm text-[var(--color-text-tertiary)] gap-2">
+                <div className="space-y-1">
                   <p>Created: {format(new Date(timeline.createdAt), 'MMM dd, yyyy')}</p>
                   <p>Last Updated: {format(new Date(timeline.updatedAt), 'MMM dd, yyyy')}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right space-y-1">
                   <p>Version: {timeline.version}</p>
                   {timeline.isForked ? (
-                    <div className="flex items-center justify-end gap-1 text-[var(--color-text-secondary)]">
+                    <div className="flex items-center gap-1 text-[var(--color-text-secondary)]">
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                       </svg>
@@ -697,7 +704,8 @@ export default function TimelinePage() {
 
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <div className="relative">
+        {/* Desktop Timeline View */}
+        <div className="hidden md:block relative">
           {/* Vertical line connecting timeline points */}
           <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[var(--color-primary-light)] to-[var(--color-primary)]" />
 
@@ -789,6 +797,97 @@ export default function TimelinePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Mobile Timeline View */}
+        <div className="md:hidden space-y-6">
+          {segments.map((segment, index) => (
+            <div key={segment.id} className="relative">
+              {/* Timeline node and line */}
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--color-primary-light)] to-[var(--color-primary)]" />
+              <div className="absolute left-0 top-0 w-8 h-8 rounded-full border-4 border-[var(--color-primary)] bg-white z-10" />
+
+              {/* Content */}
+              <div className="ml-12">
+                <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 border border-[var(--color-border)]">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-1">
+                        {segment.title}
+                      </h3>
+                      <p className="text-sm text-[var(--color-text-tertiary)]">
+                        Unit {segment.unitNumber}
+                      </p>
+                    </div>
+                    {timeline.author.id === user?.id && (
+                      <Link
+                        href={`/timeline/${params.id}/segments/${segment.id}/edit`}
+                        className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] p-2 hover:bg-[var(--color-primary-light)] rounded-lg transition-colors"
+                      >
+                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </Link>
+                    )}
+                  </div>
+
+                  {/* Goals Section */}
+                  {segment.goals && segment.goals.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">Goals</h4>
+                      <ul className="space-y-2">
+                        {segment.goals.map((goal) => (
+                          <li key={goal.id} className="flex items-start gap-2">
+                            <svg className="h-5 w-5 text-[var(--color-primary)] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-sm text-[var(--color-text-primary)]">{goal.goal}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Milestone Section */}
+                  {segment.milestone && (
+                    <div className="mb-4 bg-[var(--color-primary-light)] rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="h-5 w-5 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                        </svg>
+                        <h4 className="text-sm font-medium text-[var(--color-text-white)]">Milestone</h4>
+                      </div>
+                      <p className="text-sm text-[var(--color-text-white)]">{segment.milestone}</p>
+                    </div>
+                  )}
+
+                  {/* References Section */}
+                  {segment.references && segment.references.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">References</h4>
+                      <ul className="space-y-2">
+                        {segment.references.map((ref) => (
+                          <li key={ref.id} className="flex items-start gap-2">
+                            <svg className="h-5 w-5 text-[var(--color-text-tertiary)] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                            <span className="text-sm text-[var(--color-text-tertiary)]">{ref.reference}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
+                    <div className="flex justify-between text-xs text-[var(--color-text-tertiary)]">
+                      <span>Created: {new Date(segment.createdAt).toLocaleDateString()}</span>
+                      <span>Updated: {new Date(segment.updatedAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -949,6 +1048,7 @@ export default function TimelinePage() {
       {conditionForRenderingSegments && <RenderSegments />}
       {renderSegmentForm && <RenderSegmentsForm />}
       {showGenerateModal && <GenerateModal />}
+      <Footer />
     </>
   );
 } 

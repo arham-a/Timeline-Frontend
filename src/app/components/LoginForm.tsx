@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from './LoadingSpinner';
+
 interface LoginFormProps {
   onSwitchToSignup: () => void;
 }
@@ -89,9 +91,16 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center gap-2"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? (
+            <>
+              <LoadingSpinner size="sm" />
+              <span>Logging in...</span>
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
 
         <p className="text-center text-sm text-[var(--color-text-tertiary)]">

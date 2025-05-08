@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { ArrowRightIcon, ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import Navbar from '@/app/components/Navbar';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 import { Button } from '../components/Button';
 import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { timelineService, Timeline } from '@/lib/timelineService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 interface TimelineSection {
   timelines: Timeline[];
@@ -86,37 +88,37 @@ const TimelineCard = ({ timeline }: { timeline: Timeline }) => {
 
   return (
     <div
-    className="rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col justify-between group overflow-hidden w-[400px] h-[350px] border bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-100))]"
-    style={{
+      className="rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col justify-between group overflow-hidden h-[350px] border bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-100))]"
+      style={{
         borderColor: 'var(--color-bg-purple-100)',
-       }}
+      }}
       onClick={() => handleTimelineClick(timeline.id)}
     >
       <div className="p-6 pb-3 flex-grow overflow-hidden flex flex-col justify-between">
         <div>
           <div className="flex items-start justify-between mb-4">
             <div>
-            <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-3"
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-bg-white)',
-            }}
-          >
-            {getTypeIcon(timeline.type.type)}
-            {timeline.type.type}
-          </div>
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-3"
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'var(--color-bg-white)',
+                }}
+              >
+                {getTypeIcon(timeline.type.type)}
+                {timeline.type.type}
+              </div>
               <h3 className="text-xl font-bold transition-colors line-clamp-2 group-hover:text-[var(--color-primary)] text-[var(--color-text-primary)]">
                 {timeline.title}
               </h3>
             </div>
           </div>
-  
+
           <p className="mb-4 text-sm leading-relaxed line-clamp-2 text-[var(--color-text-secondary)]">
             {timeline.description}
           </p>
         </div>
-  
+
         <div className="grid grid-cols-2 gap-4 mt-auto">
           <div
             className="rounded-lg px-4 py-3 flex flex-col items-center justify-center"
@@ -151,7 +153,7 @@ const TimelineCard = ({ timeline }: { timeline: Timeline }) => {
           </div>
         </div>
       </div>
-  
+
       <div
         className="rounded-b-2xl px-6 py-3 flex items-center justify-between border-t"
         style={{
@@ -168,28 +170,28 @@ const TimelineCard = ({ timeline }: { timeline: Timeline }) => {
         >
           <span className="relative group-hover:font-bold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
             View Details
-        </span>
-        <span
-          aria-hidden="true"
-          className="transition-transform duration-300 group-hover:translate-x-1"
-         >
-           →
-        </span>
-      </Link>
+          </span>
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-300 group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </Link>
 
 
       </div>
     </div>
   );
-  
-  
+
+
 };
 
 const TimelineSlider = ({ title, timelines }: { title: string; timelines: Timeline[] }) => {
   return (
     <div className="mb-12">
       <h2 className="text-2xl font-semibold text-[var(--color-text-primary)] mb-6">{title}</h2>
-      <div className="flex gap-6 overflow-x-auto pb-4 px-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {timelines.map((timeline) => (
           <TimelineCard key={timeline.id} timeline={timeline} />
         ))}
@@ -202,7 +204,7 @@ const SearchResults = ({ timelines }: { timelines: Timeline[] }) => {
   return (
     <div className="mb-12">
       <h2 className="text-2xl font-semibold text-[var(--color-text-primary)] mb-6">Search Results</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {timelines.map((timeline) => (
           <TimelineCard key={timeline.id} timeline={timeline} />
         ))}
@@ -260,7 +262,7 @@ export default function Explore() {
       <>
         <Navbar />
         <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-lg">Loading...</div>
+          <LoadingSpinner size="lg" />
         </div>
       </>
     );
@@ -280,33 +282,30 @@ export default function Explore() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">Explore Timelines</h1>
-              <p className="text-[var(--color-text-secondary)] mt-2">Discover and learn from timelines created by the community</p>
+      <div className="min-h-screen bg-[var(--color-background)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">Explore Timelines</h1>
+            <div className="w-full sm:w-auto">
+              <form onSubmit={handleSearch} className="w-full">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    placeholder="Search timelines..."
+                    className="w-full px-4 py-3 pl-12 rounded-xl border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                  />
+                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--color-text-tertiary)]" />
+                  {isSearching && (
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
-
-          <form onSubmit={handleSearch} className="mb-8">
-            <div className="relative max-w-2xl">
-              <input
-                type="text"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Search timelines..."
-                className="w-full px-4 py-3 pl-12 rounded-xl border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-              />
-              <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--color-text-tertiary)]" />
-              {isSearching && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-primary)]"></div>
-                </div>
-              )}
-            </div>
-          </form>
-
           {searchResults ? (
             <SearchResults timelines={searchResults} />
           ) : (
@@ -323,6 +322,7 @@ export default function Explore() {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -98,7 +98,7 @@ export default function TimelineList({ timeline }: TimelineListProps) {
 
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Timeline Segments</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
             {/* Map through segments and display them */}
             <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
               <div className="h-40 flex items-center justify-center text-[var(--color-text-secondary)]">

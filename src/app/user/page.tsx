@@ -12,6 +12,8 @@ import Modal from '../components/Modal';
 import TimelineMetadataForm from '../components/TimelineMetadatForm';
 import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { Button } from '../components/Button';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Footer from '../components/Footer';
 
 const getTypeIcon = (type: string) => {
   switch (type.toUpperCase()) {
@@ -136,7 +138,7 @@ export default function UserPage() {
       <>
         <Navbar />
         <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-lg">Loading...</div>
+          <LoadingSpinner size="lg" />
         </div>
       </>
     );
@@ -169,7 +171,7 @@ export default function UserPage() {
     <>
       <Navbar />
       <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 mt-[26px]">
           <div className="flex justify-between items-center mb-8">
             <div>
               <div className="flex items-center gap-4 mb-2">
@@ -209,13 +211,13 @@ export default function UserPage() {
           )}
 
           {timelines?.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
               {timelines.map((timeline) => {
                 const typeColors = getTypeColor(timeline.type.type);
                 return (
                   <div
                     key={timeline.id}
-                    className="rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col justify-between group overflow-hidden w-[400px] h-[300px] border bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-100))]"
+                    className="rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col justify-between group overflow-hidden h-[300px] border bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-100))]"
                     style={{
                         borderColor: 'var(--color-bg-purple-100)',
                        }}
@@ -340,6 +342,7 @@ export default function UserPage() {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 } 

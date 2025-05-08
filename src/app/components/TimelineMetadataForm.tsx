@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { timelineService, Timeline, CreateTimelineDto } from '@/lib/timelineService';
+import LoadingSpinner from './LoadingSpinner';
 
 interface TimelineMetadataFormProps {
   onTimelineCreated: (timeline: Timeline) => void;
@@ -67,7 +68,11 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
   };
 
   if (!metadata) {
-    return <div className="text-center py-4">Loading...</div>;
+    return (
+      <div className="flex justify-center py-4">
+        <LoadingSpinner size="md" />
+      </div>
+    );
   }
 
   return (

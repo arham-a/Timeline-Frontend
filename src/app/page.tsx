@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from './components/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import LoadingSpinner from './components/LoadingSpinner';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,7 +38,7 @@ export default function HomePage() {
       <>
         <Navbar />
         <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-lg">Loading...</div>
+          <LoadingSpinner size="lg" />
         </div>
       </>
     );

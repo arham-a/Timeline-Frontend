@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthTabs from "../components/AuthTabs";
+import LoadingSpinner from '../components/LoadingSpinner';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 export default function AuthPage() {
   const { user, loading } = useAuth();
@@ -18,14 +21,18 @@ export default function AuthPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-purple-light)] p-4">
-        <div className="text-lg">Loading...</div>
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-purple-light)] p-4">
-      <AuthTabs />
-    </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-purple-light)] p-4">
+        <AuthTabs />
+      </div>
+      <Footer />
+    </>
   );
 } 
