@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from './components/LoadingSpinner';
+import Footer from './components/Footer';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -192,6 +193,7 @@ export default function HomePage() {
           </div>
         </motion.div>
       </AnimatePresence>
+      <Footer />
     </>
   );
 }

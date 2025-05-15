@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { timelineService, Timeline, CreateTimelineDto } from '@/lib/timelineService';
 import LoadingSpinner from './LoadingSpinner';
+import Dropdown from './Dropdown';
 
 interface TimelineMetadataFormProps {
   onTimelineCreated: (timeline: Timeline) => void;
@@ -121,42 +122,24 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
           <label htmlFor="typeId" className="block text-sm font-medium text-gray-700">
             Type
           </label>
-          <select
-            name="typeId"
-            id="typeId"
-            required
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          <Dropdown
+            options={[{ value: '', label: 'Select a type' }, ...metadata.timelineTypes.map((t: any) => ({ value: t.id, label: t.type }))]}
             value={formData.typeId}
-            onChange={handleChange}
-          >
-            <option value="">Select a type</option>
-            {metadata.timelineTypes.map((type: any) => (
-              <option key={type.id} value={type.id}>
-                {type.type}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => setFormData(prev => ({ ...prev, typeId: value }))}
+            placeholder="Select a type"
+          />
         </div>
 
         <div>
           <label htmlFor="timeUnitId" className="block text-sm font-medium text-gray-700">
             Time Unit
           </label>
-          <select
-            name="timeUnitId"
-            id="timeUnitId"
-            required
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          <Dropdown
+            options={[{ value: '', label: 'Select a time unit' }, ...metadata.timeUnits.map((u: any) => ({ value: u.id, label: u.code }))]}
             value={formData.timeUnitId}
-            onChange={handleChange}
-          >
-            <option value="">Select a time unit</option>
-            {metadata.timeUnits.map((unit: any) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.code}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => setFormData(prev => ({ ...prev, timeUnitId: value }))}
+            placeholder="Select a time unit"
+          />
         </div>
       </div>
 

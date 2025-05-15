@@ -66,15 +66,6 @@ const Footer = () => {
                   <p className="text-xs text-[var(--color-text-tertiary)]">Full Stack Developer</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                  <span className="text-[var(--color-primary)] font-semibold">FA</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-[var(--color-text-primary)]">Faiq Afaq</p>
-                  <p className="text-xs text-[var(--color-text-tertiary)]">Developer</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

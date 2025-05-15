@@ -171,10 +171,10 @@ export default function UserPage() {
     <>
       <Navbar />
       <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
-        <div className="max-w-7xl mx-auto px-6 mt-[26px]">
-          <div className="flex justify-between items-center mb-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-0 mt-[26px]">
+          <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
             <div>
-              <div className="flex items-center gap-4 mb-2">
+              <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-4 mb-2">
                 <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">My Timelines</h1>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-[var(--color-primary)] rounded-full border border-[var(--color-primary-light)]">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,13 +183,14 @@ export default function UserPage() {
                   <span className="text-sm font-medium">{user?.credits}</span>
                 </div>
               </div>
-              <p className="text-[var(--color-text-secondary)]">Create and manage your learning timelines</p>
+              <p className="mt-2 text-center text-[var(--color-text-secondary)]">Create and manage your learning timelines</p>
             </div>
             {createTimelineCondition && (
               <Button
                 variant="primary"
                 onClick={() => setShowTimelineForm(true)}
                 icon={<PlusIcon className="h-5 w-5" />}
+                className="w-full sm:w-auto"
               >
                 Create New Timeline
               </Button>

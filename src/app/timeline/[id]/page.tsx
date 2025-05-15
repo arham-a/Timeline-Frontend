@@ -13,6 +13,7 @@ import { mapTimelineTypeToMessage } from '@/app/utils/mapTimelineTypeToMessage';
 import { Dialog } from '@headlessui/react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Footer from '../../components/Footer';
+import Dropdown from '../../components/Dropdown';
 
 
 interface TimelineType {
@@ -153,28 +154,30 @@ export default function TimelinePage() {
   const RenderCreateButton = () => {
     if (timeline.author.id === user?.id) {
       return (
-        <div className="text-center py-12">
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No segments</h3>
-          <div className="mt-1 text-sm text-gray-500">
-            Get started by adding segments.
-          </div>
-          <div className="mt-4 space-x-4">
-            <button 
-              onClick={() => setRenderSegmentForm(true)} 
-              className="inline-flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
-            >
-              <PlusIcon className="h-5 w-5 mr-2" />
-              Add Segments Manually
-            </button>
-            {timeline.type.type === 'ROADMAP' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No segments</h3>
+            <div className="mt-1 text-sm text-gray-500">
+              Get started by adding segments.
+            </div>
+            <div className="mt-4 flex flex-col items-center sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <button 
-                onClick={() => setShowGenerateModal(true)} 
-                className="inline-flex items-center px-4 py-2 bg-[var(--color-white)] text-[var(--color-primary)] border border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+                onClick={() => setRenderSegmentForm(true)} 
+                className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
               >
-                <SparklesIcon className="h-5 w-5 mr-2" />
-                Generate with AI
+                <PlusIcon className="h-5 w-5 mr-2" />
+                Add Segments Manually
               </button>
-            )}
+              {timeline.type.type === 'ROADMAP' && (
+                <button 
+                  onClick={() => setShowGenerateModal(true)} 
+                  className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-[var(--color-white)] text-[var(--color-primary)] border border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+                >
+                  <SparklesIcon className="h-5 w-5 mr-2" />
+                  Generate with AI
+                </button>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -409,27 +412,27 @@ export default function TimelinePage() {
             </div>
           ))}
 
-          <div className="flex justify-between items-center pt-6 border-t border-[var(--color-border)]">
+          <div className="pt-6 border-t border-[var(--color-border)] flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 sm:space-x-4">
             <button
               type="button"
               onClick={addSegment}
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={segmentForms.length >= maxSegments}
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               Add Segment
             </button>
-            <div className="space-x-4">
+            <div className="flex flex-col items-center w-full sm:w-auto space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
               <button
                 type="button"
                 onClick={() => setRenderSegmentForm(false)}
-                className="px-4 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
+                className="w-full sm:w-auto px-4 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors"
+                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors"
               >
                 Save All Segments
               </button>
@@ -537,9 +540,9 @@ export default function TimelinePage() {
     const typeColors = getTypeColor(timeline.type.type);
     
     return (
-      <div className="bg-[var(--color-bg-purple-50)] pt-16">
+      <div className="bg-[var(--color-bg-purple-50)] pt-16 ">
         <div className="max-w-7xl mx-auto p-4 sm:p-6">
-          <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8">
+          <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8 mt-[1rem]">
             <div className="mb-6">
               {/* Header Section */}
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -763,9 +766,9 @@ export default function TimelinePage() {
                           <svg className="h-5 w-5 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
                           </svg>
-                          <h4 className="text-sm font-medium text-[var(--color-primary)]">Milestone</h4>
+                          <h4 className="text-sm font-medium text-[var(--color-text-white)]">Milestone</h4>
                         </div>
-                        <p className="text-sm text-[var(--color-text-primary)]">{segment.milestone}</p>
+                        <p className="text-sm text-[var(--color-text-white)]">{segment.milestone}</p>
                       </div>
                     )}
 
@@ -990,17 +993,18 @@ export default function TimelinePage() {
                   <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
                     Skill Level
                   </label>
-                  <select
+                  <Dropdown
+                    options={[
+                      { value: '', label: 'Select skill level' },
+                      { value: 'beginner', label: 'Beginner' },
+                      { value: 'intermediate', label: 'Intermediate' },
+                      { value: 'advanced', label: 'Advanced' },
+                    ]}
                     value={formData.skillLevel}
-                    onChange={(e) => handleChange('skillLevel', e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-                    required
-                  >
-                    <option value="">Select skill level</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
+                    onChange={(value) => handleChange('skillLevel', value)}
+                    placeholder="Select skill level"
+                    disabled={isGenerating}
+                  />
                 </div>
 
                 <div>
