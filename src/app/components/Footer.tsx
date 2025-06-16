@@ -1,89 +1,79 @@
 import Link from 'next/link';
-import { Logo } from './Logo';
+import { Clock } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-[var(--color-border)] pt-[5rem]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-32">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <Logo />
-            <p className="text-sm text-[var(--color-text-secondary)] pl-2">
-              Create, share, and explore learning timelines. Your journey to knowledge starts here.
-            </p>
-          </div>
+    <footer className="border-t border-white/10 bg-black/60 backdrop-blur-xl">
+          <div className="container mx-auto px-6 py-16">
+            <div className="grid md:grid-cols-3 gap-20">
+              <div>
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 p-0.5">
+                    <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-cyan-400" />
+                    </div>
+                  </div>
+                  <span className="font-black text-2xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                    TIMELINE
+                  </span>
+                </div>
+                <p className="text-gray-400 mb-6 text-lg leading-relaxed">
+                  Create, share, and explore legendary timelines. Your journey to greatness starts here.
+                </p>
+                <p className="text-sm text-gray-600 font-medium">© 2025 Timeline. All rights reserved.</p>
+              </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4 ">
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/explore" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-                  Explore Timelines
-                </Link>
-              </li>
-              <li>
-                <Link href="/auth" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-                  Sign In
-                </Link>
-              </li>
-              <li>
-                <Link href="/user" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-                  My Timelines
-                </Link>
-              </li>
-            </ul>
-          </div>
+              <div>
+                <h4 className="font-black mb-6 text-xl text-cyan-400 tracking-wide">QUICK LINKS</h4>
+                <ul className="space-y-4">
+                  <li>
+                    <Link href="/explore" className="text-gray-400 hover:text-white transition-colors text-lg font-medium hover:translate-x-2 inline-block transition-transform">
+                      Explore Timelines
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/signin" className="text-gray-400 hover:text-white transition-colors text-lg font-medium hover:translate-x-2 inline-block transition-transform">
+                      Sign In
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/my-timelines" className="text-gray-400 hover:text-white transition-colors text-lg font-medium hover:translate-x-2 inline-block transition-transform">
+                      My Timelines
+                    </Link>
+                  </li>
+                </ul>
+              </div>
 
-          {/* Creators Section */}
-          <div className="space-y-4 ">
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
-              Created By
-            </h3>
-            <div className="space-y-3"> 
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                  <span className="text-[var(--color-primary)] font-semibold">AA</span>
+              <div>
+                <h4 className="font-black mb-6 text-xl text-purple-400 tracking-wide">CREATED BY</h4>
+                <div className="space-y-6">
+              <div className="flex items-center space-x-4 group">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 p-0.5">
+                  <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">AA</span>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[var(--color-text-primary)]">Arham Alvi</p>
-                  <p className="text-xs text-[var(--color-text-tertiary)]">Full Stack Developer</p>
+                  <p className="font-bold text-lg text-white">Arham Alvi</p>
+                  <p className="text-sm text-gray-400 font-medium">Full Stack Developer</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                  <span className="text-[var(--color-primary)] font-semibold">SR</span>
+              <div className="flex items-center space-x-4 group">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 p-0.5">
+                  <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">SR</span>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[var(--color-text-primary)]">Shareeq Rashid</p>
-                  <p className="text-xs text-[var(--color-text-tertiary)]">Full Stack Developer</p>
+                  <p className="font-bold text-lg text-white">Shareeq Rashid</p>
+                  <p className="text-sm text-gray-400 font-medium">Full Stack Developer</p>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-[var(--color-border)]">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[var(--color-text-tertiary)]">
-              © {new Date().getFullYear()} Timeline. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-primary)] transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-primary)] transition-colors">
-                Terms of Service
-              </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </footer>
+        </footer>
   );
 };
 

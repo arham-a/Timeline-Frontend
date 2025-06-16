@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Clock, Code, Compass } from "lucide-react";
 import {
   UserCircleIcon,
   Bars3Icon,
@@ -39,191 +40,112 @@ export default function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav
-        className={`fixed top-4 left-3 right-3 z-50 mx-auto max-w-7xl transition-all duration-300 rounded-2xl border backdrop-blur-sm shadow-md  
-        ${
-          scrolled
-            ? "bg-[var(--color-bg-purple-light)]/80 border-[var(--color-border)]"
-            : "bg-transparent border-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Logo variant={scrolled ? 'default' : 'light'} />
-
-            <div className="hidden md:flex items-center space-x-4">
-              <Link
-                href="/guide"
-                className={`inline-flex items-center ${
-                  scrolled 
-                    ? "text-black hover:text-[var(--color-primary)]"
-                    : "text-black hover:text-black/80"
-                } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
-              >
-                <BookOpenIcon className="h-5 w-5 mr-1.5" />
-                Guide
-              </Link>
-              <Link
-                href="/explore"
-                className={`inline-flex items-center ${
-                  scrolled 
-                    ? "text-black hover:text-[var(--color-primary)]"
-                    : "text-black hover:text-black/80"
-                } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
-              >
-                <GlobeAltIcon className="h-5 w-5 mr-1.5" />
-                Explore
-              </Link>
-              {user ? (
-                <>
-                  <Link
-                    href="/user"
-                    className={`inline-flex items-center ${
-                      scrolled 
-                        ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
-                        : "text-white hover:text-white/80"
-                    } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
-                  >
-                    <HomeIcon className="h-5 w-5 mr-1.5" />
-                    My Timelines
-                  </Link>
-                  <div className="h-4 w-px bg-[var(--color-border)] mx-2" />
-                  <div className="flex items-center gap-6">
-                    <div className={`flex items-center gap-2 ${
-                      scrolled 
-                        ? "text-[var(--color-text-primary)]"
-                        : "text-white"
-                    }`}>
-                      <UserCircleIcon className="h-5 w-5 text-[var(--color-primary)]" />
-                      <span className="text-sm font-medium">{user.username}</span>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
-                    >
-                      <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1.5" />
-                      Sign Out
-                    </button>
+      <header className="fixed top-4 left-4 right-4 border border-black backdrop-blur-xl bg-transparent rounded-2xl z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 p-0.5">
+                  <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-cyan-400" />
                   </div>
-                </>
-              ) : (
-                <Link
-                  href="/auth"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
-                >
-                  <UserCircleIcon className="h-5 w-5 mr-1.5" />
-                  Sign In
-                </Link>
-              )}
+                </div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+              </div>
+              <div>
+                <h1 className="font-black text-xl bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  TIMELINE
+                </h1>
+                <p className="text-xs text-gray-500 font-medium tracking-wider">LEARNING PATH</p>
+              </div>
             </div>
-
-            {/* Mobile menu button */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="#"
+                className="group flex items-center space-x-2 text-gray-400 hover:text-cyan-400 transition-all duration-300"
+              >
+                <Code className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <span className="font-medium">Guide</span>
+              </Link>
+              <Link
+                href="#"
+                className="group flex items-center space-x-2 text-gray-400 hover:text-purple-400 transition-all duration-300"
+              >
+                <Compass className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <span className="font-medium">Explore</span>
+              </Link>
+              <Link href="/signin">
+                <button className="bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-500 hover:via-pink-500 hover:to-cyan-500 text-white border-0 font-bold px-6 py-2 rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105">
+                  Sign in
+                </button>
+              </Link>
+            </nav>
+            {/* Hamburger menu for mobile */}
             <div className="md:hidden">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-cyan-400 hover:bg-black/20 transition-colors"
               >
                 <Bars3Icon className="h-6 w-6" />
               </button>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Mobile Sidebar */}
-      <div className={`fixed inset-0 z-[60] ${sidebarOpen ? "" : "pointer-events-none"}`}>
-
+      <div className={`fixed inset-0 z-[60] ${sidebarOpen ? '' : 'pointer-events-none'}`}>
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${
-            sidebarOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setSidebarOpen(false)}
         />
-
         {/* Sidebar Panel */}
         <div
-          className={`absolute top-0 left-0 h-full w-64 shadow-lg transform transition-transform duration-300 ease-in-out ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } bg-[var(--color-bg-purple-50)]`}
+          className={`absolute top-4 left-4 right-4 max-w-sm mx-auto h-[90vh] overflow-y-auto shadow-lg transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0 pointer-events-none'} bg-black/40 backdrop-blur-xl rounded-2xl border border-black p-6`}
         >
-          <div className="flex items-center justify-between px-4 py-4">
-            <Logo />
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 p-0.5">
+                  <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-cyan-400" />
+                  </div>
+                </div>
+              </div>
+              <h1 className="font-black text-xl bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                TIMELINE
+              </h1>
+            </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded hover:bg-[var(--color-bg-purple-50)]"
+              className="p-2 rounded hover:bg-black/20"
             >
-              <XMarkIcon className="h-6 w-6 text-[var(--color-primary)]" />
+              <XMarkIcon className="h-6 w-6 text-cyan-400" />
             </button>
           </div>
-
-          {user && (
-            <div className="mb-6 px-2 py-2 bg-[var(--color-bg-purple-light)] rounded-lg mx-4">
-              <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
-                <UserCircleIcon className="h-5 w-5 text-[var(--color-primary)]" />
-                <span className="text-sm font-medium">{user.username}</span>
-              </div>
-            </div>
-          )}
-
-          <nav className="flex flex-col space-y-2 px-4">
+          <nav className="flex flex-col space-y-4">
             <Link
-              href="/guide"
-              className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
-                scrolled 
-                  ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
-                  : "text-white hover:text-white/80"
-              }`}
+              href="#"
+              className="flex items-center space-x-2 text-gray-300 hover:text-cyan-400 transition-all duration-300"
+              onClick={() => setSidebarOpen(false)}
             >
-              <BookOpenIcon className="h-5 w-5 mr-1.5" />
-              Guide
+              <Code className="w-5 h-5" />
+              <span className="font-medium">Guide</span>
             </Link>
             <Link
-              href="/explore"
-              className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
-                scrolled 
-                  ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
-                  : "text-white hover:text-white/80"
-              }`}
+              href="#"
+              className="flex items-center space-x-2 text-gray-300 hover:text-purple-400 transition-all duration-300"
+              onClick={() => setSidebarOpen(false)}
             >
-              <GlobeAltIcon className="h-5 w-5 mr-1.5" />
-              Explore
+              <Compass className="w-5 h-5" />
+              <span className="font-medium">Explore</span>
             </Link>
-
-            {user ? (
-              <>
-                <Link
-                  href="/user"
-                  className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
-                    scrolled 
-                      ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
-                      : "text-white hover:text-white/80"
-                  }`}
-                >
-                  <HomeIcon className="h-5 w-5 mr-1.5" />
-                  My Timelines
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
-                >
-                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                   Sign Out
-                </button>
-
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/auth"
-                  className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
-                >
-                  <UserCircleIcon className="h-5 w-5" />
-                  Get Started
-                </Link>
-
-              </>
-            )}
+            <Link href="/signin" onClick={() => setSidebarOpen(false)}>
+              <button className="w-full mt-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-500 hover:via-pink-500 hover:to-cyan-500 text-white border-0 font-bold px-6 py-3 rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105">
+                Sign in
+              </button>
+            </Link>
           </nav>
         </div>
       </div>

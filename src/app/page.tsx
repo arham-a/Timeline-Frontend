@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from './components/LoadingSpinner';
 import Footer from './components/Footer';
+import { FeatureCard } from './components/ui/FeatureCard';
+import { Clock, Code, Compass, Plus, Users, TrendingUp, ArrowRight, Sparkles, Zap, Target } from "lucide-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,157 +47,145 @@ export default function HomePage() {
   }
 
   return (
-    <>
-      <Navbar />
-      <AnimatePresence>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          variants={containerVariants}
-          className="min-h-screen bg-[var(--color-bg-purple-50)]"
-        >
-          {/* Hero Section */}
-          <div className="relative isolate px-6 pt-14 lg:px-8 bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] bg-cover bg-center bg-no-repeat">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-bg-purple-50)_0%,var(--color-bg-purple-100)_50%,var(--color-bg-purple-100)_200%)] opacity-95"></div>
-            <div className="absolute inset-0 bg-[url('/images/Capture.JPG')] bg-cover bg-center bg-no-repeat opacity-2"></div>
-            <motion.div
-              className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 relative z-10"
-              variants={fadeInUp}
-            >
-              <div className="text-center">
-                <motion.h1
-                  className="text-4xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-6xl"
-                  variants={fadeInUp}
-                >
-                  Your Journey, Your Timeline
-                </motion.h1>
-                <motion.p
-                  className="mt-6 text-lg leading-8 text-[var(--color-text-secondary)]"
-                  variants={fadeInUp}
-                >
-                  Create, manage, and share your personal and professional timelines. 
-                  Track your progress, set milestones, and collaborate with others.
-                </motion.p>
-                <motion.div
-                  className="mt-10 flex items-center justify-center gap-x-6"
-                  variants={fadeInUp}
-                >
-                  {!user ? (
-                    <>
-                      <Link
-                        href="/auth"
-                        className="rounded-md bg-[var(--color-primary)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:scale-105 hover:bg-[var(--color-primary-dark)] transition-transform"
-                      >
-                        Get started
-                      </Link>
-                      <Link
-                        href="/explore"
-                        className="group relative inline-flex items-center gap-1 text-sm font-semibold leading-6 text-[var(--color-text-primary)] cursor-pointer"
-                      >
-                        <span className="relative group-hover:font-bold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
-                            Explore timelines
-                        </span>
-                        <span
-                           aria-hidden="true"
-                            className="transition-transform duration-300 group-hover:translate-x-1"
-                        >
-                           →
-                       </span>
-                      </Link>
-                    </>
-                  ) : (
-                    <Link
-                      href="/user"
-                      className="rounded-md bg-[var(--color-primary)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:scale-105 hover:bg-[var(--color-primary-dark)] transition-transform"
-                    >
-                      My Timelines
-                    </Link>
-                  )}
-                </motion.div>
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-500/5 to-transparent rounded-full"></div>
+      </div>
+
+      <div className="relative z-10">
+        {/* Header */}
+       <Navbar />
+
+        {/* Hero Section */}
+        <section className="py-32 px-6 relative">
+          <div className="container mx-auto text-center max-w-6xl">
+            <div className="space-y-8">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 rounded-full px-6 py-3 backdrop-blur-sm">
+                <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+                <span className="text-purple-300 font-semibold tracking-wide">NEXT-GEN TIMELINE PLATFORM</span>
               </div>
-            </motion.div>
-          </div>
 
-          {/* Features Section */}
-          <div className="bg-[var(--color-bg-purple-50)] py-24 sm:py-32">
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-              <motion.div
-                className="mx-auto max-w-2xl lg:text-center"
-                variants={fadeInUp}
-              >
-                <h2 className="text-base font-semibold leading-7 text-[var(--color-primary)] flex items-center justify-center gap-2">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Timeline Management
-                </h2>
-                <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-4xl">
-                  Everything you need to manage your timelines
-                </p>
-                <p className="mt-6 text-lg leading-8 text-[var(--color-text-secondary)]">
-                  Whether you're planning your career, tracking a project, or documenting history,
-                  our platform provides all the tools you need.
-                </p>
-              </motion.div>
+              <h1 className="text-6xl md:text-8xl font-black leading-none tracking-tight">
+                <span className="block">YOUR JOURNEY,</span>
+                <span className="block bg-gradient-to-r from-cyan-400 via-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent animate-pulse">
+                  YOUR TIMELINE
+                </span>
+              </h1>
 
-              <motion.dl
-                className="mx-auto mt-16 max-w-2xl grid gap-x-8 gap-y-16 lg:grid-cols-3 sm:mt-20 lg:mt-24 lg:max-w-none"
-                variants={containerVariants}
-              >
-                {[
-                  {
-                    title: "Create & Customize",
-                    desc: "Build beautiful, interactive timelines with custom segments, milestones, and goals.",
-                    iconPath: "M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  },
-                  {
-                    title: "Collaborate & Share",
-                    desc: "Share your timelines with others and collaborate on shared projects.",
-                    iconPath: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  },
-                  {
-                    title: "Track & Progress",
-                    desc: "Monitor your progress, update segments, and achieve your goals.",
-                    iconPath: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="relative flex flex-col bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-light))] hover:bg-[linear-gradient(to_top_left,white,var(--color-bg-purple-light))] p-6 rounded-2xl shadow-sm border border-[var(--color-border)] transition-all duration-300"
+              <p className="text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
+                Create <span className="text-cyan-400 font-semibold">stunning</span>, manage{" "}
+                <span className="text-purple-400 font-semibold">effortlessly</span>, and share{" "}
+                <span className="text-pink-400 font-semibold">instantly</span>. The future of timeline creation is here.
+              </p>
 
-
-                    variants={cardVariants}
+              <div className="flex flex-col sm:flex-row gap-6 justify-center pt-12">
+                <Link href="/auth">
+                  <button
+                    className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 text-white border-0 px-12 py-4 text-xl font-bold rounded-2xl shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-500 hover:scale-110"
                   >
-                    <div className="absolute -top-4 left-6">
-                      <div className="rounded-full bg-[var(--color-primary)] p-3 shadow-lg">
-                        <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.iconPath} />
-                        </svg>
-                      </div>
-                    </div>
-                    <dt className="mt-4 text-base font-semibold leading-7 text-[var(--color-text-primary)]">
-                      {item.title}
-                    </dt>
-                    <dd className="mt-4 flex flex-col text-base leading-7 text-[var(--color-text-secondary)]">
-                      <p className="flex-auto">{item.desc}</p>
-                      <div className="group mt-4 flex items-center gap-2 text-[var(--color-primary)] cursor-pointer">
-                        <span className="relative text-sm font-medium group-hover:font-semibold after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-[var(--color-primary)] after:transition-all after:duration-300 group-hover:after:w-full">
-                           Learn more
-                        </span>
-                        <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </dd>
-                  </motion.div>
-                ))}
-              </motion.dl>
+                    <span className="flex items-center">
+                      GET STARTED
+                      <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
+                    </span>
+                  </button>
+                </Link>
+
+                <Link href="/explore">
+                  <button
+                    className="border-2 border-gray-600 hover:border-cyan-400 text-gray-300 hover:text-white bg-black/50 hover:bg-cyan-400/10 px-12 py-4 text-xl font-bold rounded-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                  >
+                    <span className="flex items-center">
+                      EXPLORE NOW
+                      <Zap className="w-6 h-6 ml-3 group-hover:text-cyan-400 transition-colors" />
+                    </span>
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
-        </motion.div>
-      </AnimatePresence>
-      <Footer />
-    </>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-32 px-6 relative">
+          <div className="container mx-auto max-w-7xl">
+            <div className="text-center mb-20">
+              <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-full px-8 py-4 mb-8 backdrop-blur-sm">
+                <Target className="w-6 h-6 text-cyan-400" />
+                <span className="text-cyan-300 font-bold text-lg tracking-wide">POWERFUL FEATURES</span>
+              </div>
+
+              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                EVERYTHING YOU NEED TO{" "}
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  DOMINATE
+                </span>
+              </h2>
+
+              <p className="text-2xl text-gray-400 max-w-4xl mx-auto font-light">
+                Whether you're building your empire, tracking massive projects, or documenting legendary journeys -
+                we've got the arsenal you need.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              <FeatureCard
+                title="CREATE & CUSTOMIZE"
+                description="Build mind-blowing, interactive timelines with custom segments, epic milestones, and crushing goals."
+                icon={<Plus className="w-8 h-8 text-white" />}
+                spotlightColor="rgba(37,99,235,0.35)"
+                textColor="text-blue-600"
+                iconBgColor="bg-blue-600"
+                borderColor='border-blue-600'
+                points={[
+                  { color: "bg-cyan-400", text: "Custom templates" },
+                  { color: "bg-blue-500", text: "Interactive elements" },
+                  { color: "bg-purple-400", text: "Rich media support" },
+                  { color: "bg-pink-400", text: "Goal tracking" },
+                ]}
+              />
+
+              <FeatureCard
+                title="COLLABORATE & SHARE"
+                description="Share your masterpieces with the world and collaborate with your team in real-time like never before."
+                icon={<Users className="w-8 h-8 text-white" />}
+                spotlightColor="rgba(168,85,247,0.35)"
+                textColor="text-purple-600"
+                iconBgColor="bg-purple-600"
+                borderColor='border-purple-600'
+                points={[
+                  { color: "bg-cyan-400", text: "Team collaboration" },
+                  { color: "bg-blue-500", text: "Public sharing" },
+                  { color: "bg-purple-400", text: "Real-time updates" },
+                  { color: "bg-pink-400", text: "Comment system" },
+                ]}
+              />
+
+              <FeatureCard
+                title="TRACK & PROGRESS"
+                description="Monitor your empire's growth, smash through milestones, and achieve legendary status with precision tracking."
+                icon={<TrendingUp className="w-8 h-8 text-white" />}
+                spotlightColor="rgba(34,197,94,0.35)"
+                textColor="text-green-600"
+                iconBgColor="bg-green-600"
+                borderColor='border-green-600'
+                points={[
+                  { color: "bg-green-400", text: "Progress tracking" },
+                  { color: "bg-emerald-400", text: "Milestone alerts" },
+                  { color: "bg-teal-400", text: "Analytics dashboard" },
+                  { color: "bg-cyan-400", text: "Goal completion" },
+                ]}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </div>
   );
 }
