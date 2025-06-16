@@ -74,7 +74,7 @@ export default function Navbar() {
                 <Compass className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                 <span className="font-medium">Explore</span>
               </Link>
-              <Link href="/signin">
+              <Link href="/auth">
                 <button className="bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-500 hover:via-pink-500 hover:to-cyan-500 text-white border-0 font-bold px-6 py-2 rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105">
                   Sign in
                 </button>
@@ -102,9 +102,9 @@ export default function Navbar() {
         />
         {/* Sidebar Panel */}
         <div
-          className={`absolute top-4 left-4 right-4 max-w-sm mx-auto h-[90vh] overflow-y-auto shadow-lg transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0 pointer-events-none'} bg-black/40 backdrop-blur-xl rounded-2xl border border-black p-6`}
+          className={`absolute top-0 left-0 right-0 bottom-0 w-full h-full rounded-none max-w-none mx-0 p-0 bg-black/40 backdrop-blur-xl border-0 z-50 md:top-4 md:left-4 md:right-4 md:max-w-sm md:rounded-2xl md:border md:p-6 md:bg-black/40 md:backdrop-blur-xl md:shadow-lg md:mx-auto md:h-[90vh] md:overflow-y-auto md:z-[60] transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0 pointer-events-none'}`}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 p-6 md:p-0">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 p-0.5">
@@ -124,7 +124,7 @@ export default function Navbar() {
               <XMarkIcon className="h-6 w-6 text-cyan-400" />
             </button>
           </div>
-          <nav className="flex flex-col space-y-4">
+          <nav className="flex flex-col space-y-4 p-6 md:p-0">
             <Link
               href="#"
               className="flex items-center space-x-2 text-gray-300 hover:text-cyan-400 transition-all duration-300"
@@ -141,7 +141,7 @@ export default function Navbar() {
               <Compass className="w-5 h-5" />
               <span className="font-medium">Explore</span>
             </Link>
-            <Link href="/signin" onClick={() => setSidebarOpen(false)}>
+            <Link href="/auth" onClick={() => setSidebarOpen(false)}>
               <button className="w-full mt-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-500 hover:via-pink-500 hover:to-cyan-500 text-white border-0 font-bold px-6 py-3 rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105">
                 Sign in
               </button>

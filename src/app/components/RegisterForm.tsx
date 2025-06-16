@@ -42,18 +42,18 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     }
   };
 
-  const inputStyle = "w-full pl-10 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]";
-  const iconStyle = "w-5 h-5 absolute left-3 top-2.5 text-[var(--color-primary)]";
+  const inputStyle = "w-full pl-10 pr-4 py-2 bg-black/60 border border-blue-700 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-md";
+  const iconStyle = "w-5 h-5 absolute left-3 top-2.5 text-blue-400";
 
   return (
-    <div className="max-w-md mx-auto space-y-6 py-2">
-      <h2 className="text-2xl font-bold text-center mb-1">Create an account</h2>
-      <p className="text-center text-[var(--color-text-tertiary)] text-sm mb-4">
+    <div className="max-w-md mx-auto space-y-6 py-2  rounded-2xl shadow-xl backdrop-blur-xl p-8">
+      <h2 className="text-2xl font-bold text-center mb-1 text-white">Create an account</h2>
+      <p className="text-center text-gray-400 text-sm mb-4">
         Enter your information to create an account
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         {message && (
-          <div className="text-sm text-center text-[var(--color-error)]">{message}</div>
+          <div className="text-sm text-center text-red-400 bg-red-900/20 border border-red-500 rounded-md p-2 mb-2">{message}</div>
         )}
 
         <div className="relative">
@@ -118,7 +118,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-purple-400 hover:via-pink-400 hover:to-cyan-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -130,12 +130,12 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           )}
         </button>
 
-        <p className="text-center text-sm text-[var(--color-text-tertiary)]">
+        <p className="text-center text-sm text-gray-400">
           Already have an account?{" "}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="text-[var(--color-primary)] hover:underline"
+            className="text-purple-400 hover:underline font-semibold"
           >
             Login
           </button>
