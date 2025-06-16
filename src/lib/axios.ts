@@ -32,6 +32,7 @@ const getAPIClient = (ctx = undefined): AxiosInstance => {
   api.interceptors.response.use(
     (response: AxiosResponse) => response,
     (error) => {
+      console.error('API Error:', error);
       // Handle unauthorized errors
       if (error.response && error.response.status === 401) {
         // Handle differently on server vs client
@@ -41,7 +42,14 @@ const getAPIClient = (ctx = undefined): AxiosInstance => {
           delete api.defaults.headers.Authorization;
         }
       }
-      return Promise.reject(error);
+      // Ensure we always throw an error with a message
+      if (error.response?.data?.message) {
+        return Promise.reject(new Error(error.response.data.message));
+      } else if (error.message) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error('An error occurred'));
+      }
     }
   );
   

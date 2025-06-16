@@ -22,16 +22,22 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    
     setLoading(true);
     setMessage(null);
     
     try {
       await signIn(form.email, form.password);
-      setMessage("Login successful!");
-       // redirect to dashboard
-       router.push('/');
     } catch (error: any) {
-      setMessage(error.message || "Failed to login");
+      console.error('Login error in form:', error);
+      if (error.response?.status === 401) {
+        setMessage('Invalid email or password');
+      } else if (error.message) {
+        setMessage(error.message);
+      } else {
+        setMessage('An error occurred during login');
+      }
     } finally {
       setLoading(false);
     }
@@ -39,13 +45,17 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
 
   return (
     <div className="max-w-md mx-auto space-y-6 py-2">
+      {message && (
+        <div className="w-full p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+          <p className="font-medium">{message}</p>
+        </div>
+      )}
+      
       <div className="text-center">
         <h2 className="text-2xl font-bold">Welcome back</h2>
         <p className="text-[var(--color-text-tertiary)] text-sm">Enter your credentials to access your account</p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {message && <div className="text-sm text-center text-[var(--color-error)]">{message}</div>}
-
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-secondary)]">Email</label>
           <div className="mt-1 relative">
@@ -91,16 +101,9 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-md font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
         >
-          {loading ? (
-            <>
-              <LoadingSpinner size="sm" />
-              <span>Logging in...</span>
-            </>
-          ) : (
-            "Login"
-          )}
+          Login
         </button>
 
         <p className="text-center text-sm text-[var(--color-text-tertiary)]">

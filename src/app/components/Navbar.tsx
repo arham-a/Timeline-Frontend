@@ -8,6 +8,7 @@ import {
   ArrowLeftOnRectangleIcon,
   HomeIcon,
   GlobeAltIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
@@ -48,12 +49,27 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Logo />
+            <Logo variant={scrolled ? 'default' : 'light'} />
 
             <div className="hidden md:flex items-center space-x-4">
               <Link
+                href="/guide"
+                className={`inline-flex items-center ${
+                  scrolled 
+                    ? "text-black hover:text-[var(--color-primary)]"
+                    : "text-black hover:text-black/80"
+                } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
+              >
+                <BookOpenIcon className="h-5 w-5 mr-1.5" />
+                Guide
+              </Link>
+              <Link
                 href="/explore"
-                className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className={`inline-flex items-center ${
+                  scrolled 
+                    ? "text-black hover:text-[var(--color-primary)]"
+                    : "text-black hover:text-black/80"
+                } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
               >
                 <GlobeAltIcon className="h-5 w-5 mr-1.5" />
                 Explore
@@ -62,14 +78,22 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/user"
-                    className="inline-flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    className={`inline-flex items-center ${
+                      scrolled 
+                        ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                        : "text-white hover:text-white/80"
+                    } px-3 py-2 rounded-md text-sm font-medium transition-colors`}
                   >
                     <HomeIcon className="h-5 w-5 mr-1.5" />
                     My Timelines
                   </Link>
                   <div className="h-4 w-px bg-[var(--color-border)] mx-2" />
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                    <div className={`flex items-center gap-2 ${
+                      scrolled 
+                        ? "text-[var(--color-text-primary)]"
+                        : "text-white"
+                    }`}>
                       <UserCircleIcon className="h-5 w-5 text-[var(--color-primary)]" />
                       <span className="text-sm font-medium">{user.username}</span>
                     </div>
@@ -144,8 +168,23 @@ export default function Navbar() {
 
           <nav className="flex flex-col space-y-2 px-4">
             <Link
+              href="/guide"
+              className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
+                scrolled 
+                  ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                  : "text-white hover:text-white/80"
+              }`}
+            >
+              <BookOpenIcon className="h-5 w-5 mr-1.5" />
+              Guide
+            </Link>
+            <Link
               href="/explore"
-              className="flex items-center gap-2 px-2 py-3 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-purple-light)]"
+              className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
+                scrolled 
+                  ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                  : "text-white hover:text-white/80"
+              }`}
             >
               <GlobeAltIcon className="h-5 w-5 mr-1.5" />
               Explore
@@ -155,7 +194,11 @@ export default function Navbar() {
               <>
                 <Link
                   href="/user"
-                  className="flex items-center gap-2 px-2 py-3 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-purple-light)]"
+                  className={`flex items-center gap-2 px-2 py-3 text-sm font-medium ${
+                    scrolled 
+                      ? "text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                      : "text-white hover:text-white/80"
+                  }`}
                 >
                   <HomeIcon className="h-5 w-5 mr-1.5" />
                   My Timelines

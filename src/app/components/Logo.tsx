@@ -5,7 +5,7 @@ interface LogoProps {
 }
 
 export function Logo({ variant = 'default' }: LogoProps) {
-  const textColor = variant === 'light' ? 'text-white' : 'text-[var(--color-text-primary)]';
+  const textColor = variant === 'light' ? 'text-black' : 'text-[var(--color-text-primary)]';
 
   return (
     <Link href="/" className="flex items-center gap-2 select-none">

@@ -56,9 +56,11 @@ export default function HomePage() {
           className="min-h-screen bg-[var(--color-bg-purple-50)]"
         >
           {/* Hero Section */}
-          <div className="relative isolate px-6 pt-14 lg:px-8 bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))]">
+          <div className="relative isolate px-6 pt-14 lg:px-8 bg-[linear-gradient(to_bottom_right,white,var(--color-bg-purple-100))] bg-cover bg-center bg-no-repeat">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-bg-purple-50)_0%,var(--color-bg-purple-100)_50%,var(--color-bg-purple-100)_200%)] opacity-95"></div>
+            <div className="absolute inset-0 bg-[url('/images/Capture.JPG')] bg-cover bg-center bg-no-repeat opacity-2"></div>
             <motion.div
-              className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 "
+              className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 relative z-10"
               variants={fadeInUp}
             >
               <div className="text-center">

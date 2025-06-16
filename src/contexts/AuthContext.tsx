@@ -66,6 +66,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
       const response = await authService.login(email, password);
       
+      if (!response.success) {
+        throw new Error(response.message || 'Login failed');
+      }
+      
       localStorage.setItem('accessToken', response.data.accessToken);
       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
       
@@ -78,8 +82,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
       
       router.push('/dashboard');
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        throw new Error('Invalid email or password');
+      } else if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.message) {
+        throw error;
+      } else {
+        throw new Error('An error occurred during login');
+      }
     } finally {
       setLoading(false);
     }

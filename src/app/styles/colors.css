@@ -9,13 +9,16 @@
   --color-bg-purple-light: #f3e8ff;
   --color-bg-purple-50: #faf5ff;
   --color-bg-purple-100: #d1b4ef;
+  --color-bg-purple-200: #a97bdb;
+  --color-bg-purple-300: #7943b2;
   
   /* Text Colors */
   --color-text-primary: #171717;
-  --color-text-secondary: #4b5563;
+  --color-text-secondary: #000000;
   --color-text-tertiary: #6b7280;
   --color-text-muted: #9ca3af;
   --color-text-white: #eaeaea;
+  --color-text-black: #000000;
   
   /* Border Colors */
   --color-border: #e5e7eb;

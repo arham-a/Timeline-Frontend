@@ -24,6 +24,10 @@ export const authService = {
     try {
       const response = await api.post<AuthResponse>('/auth/login', { email, password });
       
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Login failed');
+      }
+      
       console.log("Setting access token in localStorage")
       // Store access token in localStorage
       localStorage.setItem('accessToken', response.data.data.accessToken);
@@ -32,8 +36,15 @@ export const authService = {
       api.defaults.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
       
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error('Login error:', error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.message) {
+        throw error;
+      } else {
+        throw new Error('Invalid email or password');
+      }
     }
   },
   
