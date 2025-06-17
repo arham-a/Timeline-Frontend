@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserCircleIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
 import LoadingSpinner from './LoadingSpinner';
+import toast from 'react-hot-toast';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -20,7 +21,6 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const { signUp } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,13 +30,13 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
     
     try {
-      await signUp(form.fname, form.lname,  form.email, form.password, form.username);
-      setMessage("Registration successful! Please check your email for verification.");
+      await signUp(form.fname, form.lname, form.email, form.password, form.username);
+      toast.success('Registration successful! Please check your email for verification.');
+      onSwitchToLogin();
     } catch (error: any) {
-      setMessage(error.message || "Failed to register");
+      toast.error(error.message || "Failed to register");
     } finally {
       setLoading(false);
     }
@@ -46,16 +46,12 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const iconStyle = "w-5 h-5 absolute left-3 top-2.5 text-blue-400";
 
   return (
-    <div className="max-w-md mx-auto space-y-6 py-2  rounded-2xl shadow-xl backdrop-blur-xl p-8">
+    <div className="max-w-md mx-auto space-y-6 py-2 rounded-2xl shadow-xl backdrop-blur-xl p-8">
       <h2 className="text-2xl font-bold text-center mb-1 text-white">Create an account</h2>
       <p className="text-center text-gray-400 text-sm mb-4">
         Enter your information to create an account
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {message && (
-          <div className="text-sm text-center text-red-400 bg-red-900/20 border border-red-500 rounded-md p-2 mb-2">{message}</div>
-        )}
-
         <div className="relative">
           <UserCircleIcon className={iconStyle} />
           <input

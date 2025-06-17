@@ -3,7 +3,7 @@ import { Clock } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-white/10 bg-black/60 backdrop-blur-xl">
+    <footer className="border-t border-white/10 bg-black backdrop-blur-xl">
       <div className="container mx-auto px-12 py-16">
         <div className="grid md:grid-cols-3 gap-12 justify-items-center text-center">
           <div>

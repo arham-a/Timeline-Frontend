@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { ClockIcon, UserGroupIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import TimelineCarousel from '../components/TimelineCarousel';
+import TimelineCarousel from '../components/ui/TimelineCarousel';
+import { Spotlight } from '../components/ui/spotlight-new';
+import { motion } from 'framer-motion';
 
 import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { timelineService, Timeline } from '@/lib/timelineService';
@@ -266,7 +268,7 @@ export default function Explore() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>
       </>
@@ -277,7 +279,7 @@ export default function Explore() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
           <div className="text-red-600">{error}</div>
         </div>
       </>
@@ -286,63 +288,84 @@ export default function Explore() {
 
   return (
     <>
-      <div className="min-h-screen bg-[var(--color-bg-purple-50)]">
-      <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-[var(--color-text-primary)] mb-4 mt-[6rem]">
-              Explore Timelines
-            </h1>
-            <p className="text-lg text-[var(--color-text-secondary)]">
-              Discover and explore timelines created by the community
-            </p>
+      <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+        <Navbar />
+        <Spotlight
+          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(270, 100%, 85%, .08) 0, hsla(270, 100%, 55%, .02) 50%, hsla(270, 100%, 45%, 0) 80%)"
+          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .06) 0, hsla(270, 100%, 55%, .02) 80%, transparent 100%)"
+          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .04) 0, hsla(270, 100%, 45%, .02) 80%, transparent 100%)"
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="pt-16">
+            <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0 mt-20">
+            <Spotlight
+          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(270, 100%, 85%, .08) 0, hsla(270, 100%, 55%, .02) 50%, hsla(270, 100%, 45%, 0) 80%)"
+          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .06) 0, hsla(270, 100%, 55%, .02) 80%, transparent 100%)"
+          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .04) 0, hsla(270, 100%, 45%, .02) 80%, transparent 100%)"
+        />
+              <motion.h1
+                initial={{ opacity: 0.5, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.3,
+                  duration: 0.8,
+                  ease: "easeInOut",
+                }}
+                className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-purple-400 via-pink-500 to-red-500"
+              >
+                EXPLORE TIMELINES
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0.5, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.5,
+                  duration: 0.8,
+                  ease: "easeInOut",
+                }}
+                className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto"
+              >
+                Discover and explore timelines created by the community
+              </motion.p>
+            </div>
           </div>
 
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search timelines..."
-                className="w-full px-4 py-3 pl-12 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all duration-200"
-                style={{
-                  backgroundColor: 'var(--color-bg-white)',
-                  borderColor: 'var(--color-bg-purple-100)',
-                }}
-              />
-              <MagnifyingGlassIcon
-                className="h-6 w-6 absolute left-4 top-1/2 transform -translate-y-1/2"
-                style={{ color: 'var(--color-text-tertiary)' }}
-              />
-              {isLoading && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-[var(--color-primary)] border-t-transparent"></div>
-                </div>
-              )}
-            </div>
-          </form>
+          <div className="py-8">
+            <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search timelines..."
+                  className="w-full px-4 py-3 pl-12 rounded-xl border border-purple-500/20 bg-black/50 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+                />
+                <MagnifyingGlassIcon
+                  className="h-6 w-6 absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400"
+                />
+                {isLoading && (
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <LoadingSpinner size="sm" />
+                  </div>
+                )}
+              </div>
+            </form>
 
-          {searchResults ? (
-            <div className="mt-8">
+            {searchResults ? (
               <TimelineCarousel timelines={searchResults} title="Search Results" />
-            </div>
-          ) : (
-            data && (
-              <>
-                {data.data.ROADMAP.timelines.length > 0 && (
-                  <div className="mb-12">
-                    <TimelineCarousel timelines={data.data.ROADMAP.timelines} title="Roadmaps" />
-                  </div>
-                )}
-                {data.data.CHRONICLE.timelines.length > 0 && (
-                  <div className="mb-12">
-                    <TimelineCarousel timelines={data.data.CHRONICLE.timelines} title="Chronicles" />
-                  </div>
-                )}
-              </>
-            )
-          )}
+            ) : (
+              data && (
+                <>
+                  {data.data.ROADMAP.timelines.length > 0 && (
+                    <TimelineCarousel timelines={data.data.ROADMAP.timelines} title="Roadmaps" className="mb-12" />
+                  )}
+                  {data.data.CHRONICLE.timelines.length > 0 && (
+                    <TimelineCarousel timelines={data.data.CHRONICLE.timelines} title="Chronicles" className="mb-12" />
+                  )}
+                </>
+              )
+            )}
+          </div>
         </div>
       </div>
       <Footer />

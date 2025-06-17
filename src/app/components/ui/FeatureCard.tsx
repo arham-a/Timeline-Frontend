@@ -2,7 +2,7 @@
 import { motion } from "motion/react";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { CardSpotlight } from "./card-spotlight";
+import { CardSpotlight } from "@/app/components/ui/card-spotlight";
 
 interface FeatureCardProps {
   title: string;
@@ -18,7 +18,10 @@ interface FeatureCardProps {
 
 export function FeatureCard({ title, description, icon, className, points, spotlightColor, textColor, iconBgColor, borderColor }: FeatureCardProps) {
   return (
-    <CardSpotlight className={cn("relative h-full w-full p-8", borderColor || "border-gray-200", className)} spotlightColor={spotlightColor}>
+    <CardSpotlight 
+      className={cn("relative h-full w-full p-8", borderColor || "border-gray-200", className)} 
+      spotlightColor={spotlightColor}
+    >
       {/* Glowing Icon */}
       <div className="mb-6">
         <div className={cn("inline-flex items-center justify-center w-14 h-14 rounded-xl shadow-[0_4px_32px_0_rgba(0,0,0,0.10)]", iconBgColor || "bg-cyan-400") }>

@@ -1,53 +1,60 @@
 "use client";
+
+import { useMotionValue, motion, useMotionTemplate } from "motion/react";
+import React, { MouseEvent as ReactMouseEvent, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
 
 export const CardSpotlight = ({
   children,
+  radius = 350,
+  color = "#262626",
   className,
   spotlightColor,
+  ...props
 }: {
-  children: React.ReactNode;
-  className?: string;
+  radius?: number;
+  color?: string;
   spotlightColor?: string;
-}) => {
-  const divRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  children: React.ReactNode;
+} & React.HTMLAttributes<HTMLDivElement>) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  function handleMouseMove({
+    currentTarget,
+    clientX,
+    clientY,
+  }: ReactMouseEvent<HTMLDivElement>) {
+    let { left, top } = currentTarget.getBoundingClientRect();
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current) return;
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
 
-    const div = divRef.current;
-    const rect = div.getBoundingClientRect();
-
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const handleMouseEnter = () => {
-    setOpacity(1);
-  };
-
-  const handleMouseLeave = () => {
-    setOpacity(0);
-  };
-
+  const [isHovering, setIsHovering] = useState(false);
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => setIsHovering(false);
   return (
     <div
-      ref={divRef}
+      className={cn(
+        "group/spotlight p-10 rounded-md relative border border-neutral-800 bg-black dark:border-neutral-800",
+        className
+      )}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={cn(
-        "relative overflow-hidden rounded-xl border border-blue-100 bg-[#1c1b1f] to-white p-8 hover:scale-105 transition-transform duration-300",
-        className
-      )}
+      {...props}
     >
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+      <motion.div
+        className="pointer-events-none absolute z-0 -inset-px rounded-md opacity-0 transition duration-300 group-hover/spotlight:opacity-100"
         style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor || 'rgba(6,182,212,0.15)'}, transparent 50%)`,
+          backgroundColor: spotlightColor || color,
+          maskImage: useMotionTemplate`
+            radial-gradient(
+              ${radius}px circle at ${mouseX}px ${mouseY}px,
+              white,
+              transparent 80%
+            )
+          `,
         }}
       />
       {children}

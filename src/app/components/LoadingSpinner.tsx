@@ -15,16 +15,19 @@ export default function LoadingSpinner({ size = 'md', className = '' }: LoadingS
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div className={`relative ${sizeClasses[size]}`}>
-        {/* Outer ring with pulse effect */}
-        <div className="absolute inset-0 rounded-full border-4 border-[var(--color-primary-light)] opacity-25 animate-pulse"></div>
+        {/* Outer ring with gradient and pulse effect */}
+        <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 opacity-25 animate-pulse"></div>
         
-        {/* Spinning ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-t-[var(--color-primary)] border-r-[var(--color-primary)] border-b-transparent border-l-transparent animate-spin"></div>
+        {/* Spinning gradient ring */}
+        <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-spin"></div>
         
-        {/* Inner dot */}
+        {/* Inner dot with gradient */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-1/4 h-1/4 rounded-full bg-[var(--color-primary)] animate-pulse"></div>
+          <div className="w-1/4 h-1/4 rounded-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-pulse"></div>
         </div>
+
+        {/* Glow effect */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/20 via-purple-500/20 to-pink-500/20 blur-md animate-pulse"></div>
       </div>
     </div>
   );
