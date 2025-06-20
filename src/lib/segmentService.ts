@@ -5,6 +5,7 @@ export interface Segment {
   timelineId: string; // UUID reference to Timeline
   unitNumber: number;
   title: string;
+  description: string;
   milestone: string | null;
   isForkModified: boolean;
   createdAt: Date;

@@ -38,11 +38,11 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-950 to-purple-950/90 border border-cyan-900/40 shadow-2xl px-6 pb-6 pt-7 text-left transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="absolute right-0 top-0 pr-4 pt-4">
                   <button
                     type="button"
-                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
+                    className="rounded-md bg-black/30 text-cyan-200 hover:text-white hover:bg-cyan-900/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                     onClick={onClose}
                   >
                     <span className="sr-only">Close</span>
@@ -50,7 +50,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                   </button>
                 </div>
                 <div>
-                  <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-[var(--color-text-primary)] mb-4">
+                  <Dialog.Title as="h3" className="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent mb-4">
                     {title}
                   </Dialog.Title>
                   {children}

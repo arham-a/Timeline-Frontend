@@ -158,30 +158,28 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
   return (
     <div className="space-y-4">
       {error && (
-        <div className="p-3 text-sm text-[var(--color-error)] bg-red-50 rounded-lg">{error}</div>
+        <div className="p-3 text-sm text-red-200 bg-red-900/20 border border-red-500/30 rounded-lg">{error}</div>
       )}
 
       {successMessage && (
-        <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">{successMessage}</div>
+        <div className="p-3 text-sm text-green-200 bg-green-900/20 border border-green-500/30 rounded-lg">{successMessage}</div>
       )}
 
-      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleCreateTimeline(); }}>
+      <form className="space-y-6 text-white" onSubmit={(e) => { e.preventDefault(); handleCreateTimeline(); }}>
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Timeline Type</label>
+          <label className="block text-sm font-medium text-white">Timeline Type</label>
           <div className="mt-1 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-              <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-300">
+              <ClockIcon className="h-5 w-5" />
             </span>
             <select
-              className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-3 py-2 border border-cyan-900/40 rounded-lg bg-black/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 backdrop-blur"
               value={selectedTypeId}
               onChange={(e) => setSelectedTypeId(e.target.value)}
             >
-              <option value="">Select type</option>
+              <option value="" className="bg-black/80 text-gray-300">Select type</option>
               {metadata?.timelineTypes.map((type) => (
-                <option key={type.id} value={type.id}>
-                  {type.type}
-                </option>
+                <option key={type.id} value={type.id} className="bg-black/80 text-white">{type.type}</option>
               ))}
             </select>
           </div>
@@ -189,21 +187,19 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
 
         {selectedType?.needsTimeUnit && (
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Time Unit</label>
+            <label className="block text-sm font-medium text-white">Time Unit</label>
             <div className="mt-1 relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-                <CalendarIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-300">
+                <CalendarIcon className="h-5 w-5" />
               </span>
               <select
-                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                className="w-full pl-10 pr-3 py-2 border border-cyan-900/40 rounded-lg bg-black/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 backdrop-blur"
                 value={selectedTimeUnitId || ''}
                 onChange={(e) => setSelectedTimeUnitId(e.target.value || null)}
               >
-                <option value="">Select unit</option>
+                <option value="" className="bg-black/80 text-gray-300">Select unit</option>
                 {metadata?.timeUnits.map((unit) => (
-                  <option key={unit.id} value={unit.id}>
-                    {unit.code}
-                  </option>
+                  <option key={unit.id} value={unit.id} className="bg-black/80 text-white">{unit.code}</option>
                 ))}
               </select>
             </div>
@@ -212,14 +208,14 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
 
         {selectedType?.needsDuration && (
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Duration</label>
+            <label className="block text-sm font-medium text-white">Duration</label>
             <div className="mt-1 relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-                <ClockIcon className="h-5 w-5 text-[var(--color-primary)]" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-300">
+                <ClockIcon className="h-5 w-5" />
               </span>
               <input
                 type="number"
-                className="w-full pl-10 pr-3 py-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                className="w-full pl-10 pr-3 py-2 border border-cyan-900/40 rounded-lg bg-black/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 backdrop-blur"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="Enter duration"
@@ -229,10 +225,10 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
         )}
 
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Title</label>
+          <label className="block text-sm font-medium text-white">Title</label>
           <input
             type="text"
-            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="w-full mt-1 px-4 py-2 border border-cyan-900/40 rounded-lg bg-black/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 backdrop-blur"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter timeline title"
@@ -241,9 +237,9 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Description</label>
+          <label className="block text-sm font-medium text-white">Description</label>
           <textarea
-            className="w-full mt-1 p-2 border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="w-full mt-1 px-4 py-2 border border-cyan-900/40 rounded-lg bg-black/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 backdrop-blur"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter timeline description"
@@ -256,13 +252,13 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="h-4 w-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
+              className="h-4 w-4 text-cyan-500 border-cyan-900/40 bg-black/40 rounded focus:ring-cyan-500"
               checked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
               id="isPublic"
             />
-            <label htmlFor="isPublic" className="text-sm text-[var(--color-text-secondary)]">
-              <GlobeAltIcon className="h-4 w-4 inline mr-1" />
+            <label htmlFor="isPublic" className="text-sm text-white">
+              <GlobeAltIcon className="h-4 w-4 inline mr-1 text-cyan-300" />
               Public Timeline
             </label>
           </div>
@@ -270,13 +266,13 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="h-4 w-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
+              className="h-4 w-4 text-cyan-500 border-cyan-900/40 bg-black/40 rounded focus:ring-cyan-500"
               checked={enableScheduling}
               onChange={(e) => setEnableScheduling(e.target.checked)}
               id="enableScheduling"
             />
-            <label htmlFor="enableScheduling" className="text-sm text-[var(--color-text-secondary)]">
-              <LockClosedIcon className="h-4 w-4 inline mr-1" />
+            <label htmlFor="enableScheduling" className="text-sm text-white">
+              <LockClosedIcon className="h-4 w-4 inline mr-1 text-cyan-300" />
               Enable Scheduling
             </label>
           </div>
@@ -284,7 +280,7 @@ export default function TimelineMetadataForm({ onTimelineCreated }: TimelineMeta
 
         <button
           type="submit"
-          className="w-full bg-[var(--color-primary)] text-white py-2 rounded-lg font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+          className="w-full py-2 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300"
         >
           Create Timeline
         </button>

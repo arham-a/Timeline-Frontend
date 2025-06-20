@@ -19,25 +19,25 @@ interface FeatureCardProps {
 export function FeatureCard({ title, description, icon, className, points, spotlightColor, textColor, iconBgColor, borderColor }: FeatureCardProps) {
   return (
     <CardSpotlight 
-      className={cn("relative h-full w-full p-8", borderColor || "border-gray-200", className)} 
+      className={cn("relative h-full w-full p-5 xs:p-6 sm:p-8", borderColor || "border-gray-200", className)} 
       spotlightColor={spotlightColor}
     >
       {/* Glowing Icon */}
-      <div className="mb-6">
-        <div className={cn("inline-flex items-center justify-center w-14 h-14 rounded-xl shadow-[0_4px_32px_0_rgba(0,0,0,0.10)]", iconBgColor || "bg-cyan-400") }>
+      <div className="mb-4 sm:mb-6">
+        <div className={cn("inline-flex items-center justify-center w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 rounded-xl shadow-[0_4px_32px_0_rgba(0,0,0,0.10)]", iconBgColor || "bg-cyan-400") }>
           {icon}
         </div>
       </div>
       {/* Title */}
-      <h3 className={cn("text-2xl font-extrabold mb-2 uppercase tracking-tight", textColor)}>{title}</h3>
+      <h3 className={cn("text-lg xs:text-xl sm:text-2xl font-extrabold mb-1 xs:mb-2 uppercase tracking-tight", textColor)}>{title}</h3>
       {/* Description */}
-      <p className="text-white text-base mb-6 font-normal">{description}</p>
+      <p className="text-white text-sm xs:text-base mb-4 sm:mb-6 font-normal">{description}</p>
       {/* Points */}
-      <ul className="space-y-3 mt-auto">
+      <ul className="space-y-2 xs:space-y-3 mt-auto">
         {points.map((point, idx) => (
-          <li key={idx} className="flex items-center gap-3">
-            <span className={cn("w-3 h-3 rounded-full", point.color)}></span>
-            <span className={cn("text-base font-medium", textColor)}>{point.text}</span>
+          <li key={idx} className="flex items-center gap-2 xs:gap-3">
+            <span className={cn("w-2 h-2 xs:w-3 xs:h-3 rounded-full", point.color)}></span>
+            <span className={cn("text-xs xs:text-sm sm:text-base font-medium", textColor)}>{point.text}</span>
           </li>
         ))}
       </ul>

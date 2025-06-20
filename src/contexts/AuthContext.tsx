@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { authService } from '../lib/authService';
 import api from '../lib/axios';
 
-interface User {
+export interface User {
   id: string;
   fname: string;
   lname: string;

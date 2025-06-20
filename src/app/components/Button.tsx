@@ -12,6 +12,7 @@ const buttonVariants = cva(
         ghost: 'text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] focus:ring-[var(--color-primary)]',
         danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
         success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
+        gradient: 'bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400',
       },
       size: {
         sm: 'text-sm px-3 py-1.5',

@@ -14,7 +14,7 @@ import { mapTimelineTypeToMessage } from '../utils/mapTimelineTypeToMessage';
 import { Button } from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Footer from '../components/Footer';
-import TimelineCarousel from '../components/TimelineCarousel';
+import TimelineCarousel from '../components/ui/TimelineCarousel';
 
 const getTypeIcon = (type: string) => {
   switch (type.toUpperCase()) {
@@ -134,6 +134,16 @@ export default function UserPage() {
     }
   }, [user, authLoading]);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/auth');
+    }
+  }, [user, authLoading, router]);
+
+  if (!authLoading && !user) {
+    return null;
+  }
+
   if (loading || authLoading) {
     return (
       <>
@@ -157,6 +167,9 @@ export default function UserPage() {
   }
 
   const handleTimelineCreated = (newTimeline: Timeline) => {
+    if (!newTimeline.author && user) {
+      newTimeline.author = { id: user.id, username: user.username };
+    }
     setTimelines([...timelines, newTimeline]);
     setShowTimelineForm(false);
   };
@@ -170,12 +183,18 @@ export default function UserPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-0 mt-[26px]">
+      <div className="min-h-screen relative pt-24 overflow-x-hidden">
+        <div className="fixed inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-black to-purple-950"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-900/40 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-900/40 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-900/40 to-transparent rounded-full"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-0 mt-[26px]">
           <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
             <div>
               <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-4 mb-2">
-                <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">My Timelines</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">My Timelines</h1>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-[var(--color-primary)] rounded-full border border-[var(--color-primary-light)]">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -183,11 +202,11 @@ export default function UserPage() {
                   <span className="text-sm font-medium">{user?.credits}</span>
                 </div>
               </div>
-              <p className="mt-2 text-center text-[var(--color-text-secondary)]">Create and manage your learning timelines</p>
+              <p className="mt-2 text-center text-white">Create and manage your learning timelines</p>
             </div>
             {createTimelineCondition && (
               <Button
-                variant="primary"
+                variant="gradient"
                 onClick={() => setShowTimelineForm(true)}
                 icon={<PlusIcon className="h-5 w-5" />}
                 className="w-full sm:w-auto"
@@ -202,11 +221,13 @@ export default function UserPage() {
             onClose={() => setShowTimelineForm(false)}
             title="Create New Timeline"
           >
-            <TimelineMetadataForm onTimelineCreated={handleTimelineCreated} />
+            <div className="text-white">
+              <TimelineMetadataForm onTimelineCreated={handleTimelineCreated} />
+            </div>
           </Modal>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">
+            <div className="mb-4 p-4 bg-red-900/20 text-red-400 rounded-lg border border-red-500/30">
               {error}
             </div>
           )}
@@ -215,19 +236,15 @@ export default function UserPage() {
             <TimelineCarousel timelines={timelines} title="Your Timelines" />
           ) : (
             <div className="text-center py-12">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent mb-4">
                 No Timelines Yet
               </h2>
               <p className="text-[var(--color-text-secondary)] mb-8">
                 Start creating your first timeline to get started
               </p>
               <button
-                onClick={() => router.push('/timeline/new')}
-                className="px-6 py-3 rounded-xl font-semibold transition-all duration-200"
-                style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-bg-white)',
-                }}
+                onClick={() => setShowTimelineForm(true)}
+                className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 border-0 outline-none"
               >
                 Create Timeline
               </button>

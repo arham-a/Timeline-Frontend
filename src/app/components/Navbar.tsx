@@ -58,7 +58,7 @@ export default function Navbar() {
                 <h1 className="font-black text-xl bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   TIMELINE
                 </h1>
-                <p className="text-xs text-gray-500 font-medium tracking-wider">LEARNING PATH</p>
+                <p className="text-xs text-white font-medium tracking-wider">LEARNING PATH</p>
               </div>
             </div>
 
@@ -70,23 +70,21 @@ export default function Navbar() {
                 <Code className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                 <span className="font-medium">Guide</span>
               </Link>
+              <Link
+                href="/explore"
+                className="group flex items-center space-x-2 text-gray-400 hover:text-purple-400 transition-all duration-300"
+              >
+                <Compass className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <span className="font-medium">Explore</span>
+              </Link>
               {user && (
-                <>
-                  <Link
-                    href="/explore"
-                    className="group flex items-center space-x-2 text-gray-400 hover:text-purple-400 transition-all duration-300"
-                  >
-                    <Compass className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                    <span className="font-medium">Explore</span>
-                  </Link>
-                  <Link
-                    href="/user"
-                    className="group flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-all duration-300"
-                  >
-                    <Clock className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                    <span className="font-medium">My Timeline</span>
-                  </Link>
-                </>
+                <Link
+                  href="/user"
+                  className="group flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-all duration-300"
+                >
+                  <Clock className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  <span className="font-medium">My Timeline</span>
+                </Link>
               )}
               {user ? (
                 <div className="relative">
@@ -180,25 +178,23 @@ export default function Navbar() {
                   <Code className="w-5 h-5" />
                   <span className="font-medium">Guide</span>
                 </Link>
+                <Link
+                  href="/explore"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-purple-400 transition-all duration-300"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <Compass className="w-5 h-5" />
+                  <span className="font-medium">Explore</span>
+                </Link>
                 {user && (
-                  <>
-                    <Link
-                      href="/explore"
-                      className="flex items-center space-x-2 text-gray-300 hover:text-purple-400 transition-all duration-300"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <Compass className="w-5 h-5" />
-                      <span className="font-medium">Explore</span>
-                    </Link>
-                    <Link
-                      href="/user"
-                      className="flex items-center space-x-2 text-gray-300 hover:text-pink-400 transition-all duration-300"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <Clock className="w-5 h-5" />
-                      <span className="font-medium">My Timeline</span>
-                    </Link>
-                  </>
+                  <Link
+                    href="/user"
+                    className="flex items-center space-x-2 text-gray-300 hover:text-pink-400 transition-all duration-300"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <Clock className="w-5 h-5" />
+                    <span className="font-medium">My Timeline</span>
+                  </Link>
                 )}
               </nav>
 
