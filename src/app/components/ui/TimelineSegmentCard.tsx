@@ -67,7 +67,7 @@ export default function TimelineSegmentCard(props: TimelineSegmentCardProps) {
         milestone: editData.milestone,
         goals: editData.goals.map((goal, i) => ({ id: segment.goals[i]?.id || Math.random().toString(), goal })),
         references: editData.references.map((reference, i) => ({ id: segment.references[i]?.id || Math.random().toString(), reference })),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(),
       };
       setIsEditOpen(false);
       if (onSegmentUpdate) onSegmentUpdate(locallyUpdatedSegment);
