@@ -148,7 +148,7 @@ export default function UserPage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>
       </>
@@ -159,8 +159,8 @@ export default function UserPage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-red-600">{error}</div>
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
+          <div className="text-red-400">{error}</div>
         </div>
       </>
     );
@@ -182,34 +182,30 @@ export default function UserPage() {
 
   return (
     <>
-      <Navbar />
-      <div className="min-h-screen relative pt-24 overflow-x-hidden">
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-black to-purple-950"></div>
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-900/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-900/40 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-900/40 to-transparent rounded-full"></div>
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-0 mt-[26px]">
-          <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
-            <div>
-              <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-4 mb-2">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">My Timelines</h1>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-[var(--color-primary)] rounded-full border border-[var(--color-primary-light)]">
+      <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-16">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-12">
+            <div className="flex-1">
+              <div className="flex flex-wrap items-center gap-3 mb-3">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                  My Timelines
+                </h1>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-300 rounded-lg border border-purple-500/30">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm font-medium">{user?.credits}</span>
+                  <span className="text-sm font-semibold">{user?.credits}</span>
                 </div>
               </div>
-              <p className="mt-2 text-center text-white">Create and manage your learning timelines</p>
+              <p className="text-gray-400 text-sm sm:text-base">Create and manage your learning timelines</p>
             </div>
             {createTimelineCondition && (
               <Button
                 variant="gradient"
                 onClick={() => setShowTimelineForm(true)}
                 icon={<PlusIcon className="h-5 w-5" />}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
               >
                 Create New Timeline
               </Button>
@@ -227,7 +223,7 @@ export default function UserPage() {
           </Modal>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-900/20 text-red-400 rounded-lg border border-red-500/30">
+            <div className="mb-6 p-4 bg-red-500/10 text-red-400 rounded-lg border border-red-500/20">
               {error}
             </div>
           )}
@@ -235,16 +231,16 @@ export default function UserPage() {
           {timelines?.length > 0 ? (
             <TimelineCarousel timelines={timelines} title="Your Timelines" />
           ) : (
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent mb-4">
+            <div className="text-center py-16 sm:py-24">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-4">
                 No Timelines Yet
               </h2>
-              <p className="text-[var(--color-text-secondary)] mb-8">
+              <p className="text-gray-400 mb-8 text-sm sm:text-base">
                 Start creating your first timeline to get started
               </p>
               <button
                 onClick={() => setShowTimelineForm(true)}
-                className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 border-0 outline-none"
+                className="px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 Create Timeline
               </button>

@@ -12,29 +12,29 @@ export default function AuthTabs() {
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <div className="flex w-full mb-8 rounded-xl overflow-hidden shadow-lg bg-black/60 backdrop-blur-xl border border-blue-600">
+      <div className="flex w-full mb-6 rounded-xl overflow-hidden bg-black/50 backdrop-blur-xl border border-purple-500/20">
         <button
-          className={`w-1/2 py-3 text-lg font-bold transition-all duration-300 focus:outline-none ${
+          className={`w-1/2 py-3.5 text-base font-semibold transition-all duration-300 focus:outline-none ${
             activeTab === "login"
-              ? "bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-500 text-white shadow-lg scale-105"
-              : "bg-transparent text-blue-200 hover:bg-blue-900/30"
+              ? "bg-purple-600 text-white"
+              : "bg-transparent text-gray-400 hover:text-gray-200"
           }`}
           onClick={switchToLogin}
         >
           Login
         </button>
         <button
-          className={`w-1/2 py-3 text-lg font-bold transition-all duration-300 focus:outline-none ${
+          className={`w-1/2 py-3.5 text-base font-semibold transition-all duration-300 focus:outline-none ${
             activeTab === "signup"
-              ? "bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white shadow-lg scale-105"
-              : "bg-transparent text-purple-200 hover:bg-purple-900/30"
+              ? "bg-purple-600 text-white"
+              : "bg-transparent text-gray-400 hover:text-gray-200"
           }`}
           onClick={switchToSignup}
         >
           Sign Up
         </button>
       </div>
-      <div className="w-full max-w-xl mx-auto p-6 rounded-2xl bg-black/70 border border-blue-600 shadow-xl backdrop-blur-xl">
+      <div className="w-full max-w-xl mx-auto p-8 rounded-2xl bg-black/50 border border-purple-500/20 backdrop-blur-xl">
         {activeTab === "login" ? <LoginForm onSwitchToSignup={switchToSignup} /> : <RegisterForm onSwitchToLogin={switchToLogin} />}
       </div>
     </div>

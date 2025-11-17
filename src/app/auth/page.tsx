@@ -7,7 +7,8 @@ import AuthTabs from "../components/AuthTabs";
 import LoadingSpinner from '../components/LoadingSpinner';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Boxes } from '../components/ui/background-boxes';
+import { Spotlight } from '../components/ui/spotlight-new';
+import { motion } from 'framer-motion';
 
 export default function AuthPage() {
   const { user, loading } = useAuth();
@@ -21,30 +22,37 @@ export default function AuthPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-black/[0.96]">
         <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      <Boxes />
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20"></div>
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-500/5 to-transparent rounded-full"></div>
-      </div>
-      <div className="relative z-10">
-        <Navbar />
-        <div className="flex items-center justify-center min-h-[80vh] py-16 px-4">
-          <div className="w-full max-w-xl   p-8 mt-16">
-            <AuthTabs />
+    <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+      <Navbar />
+      <Spotlight
+        gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(270, 100%, 85%, .08) 0, hsla(270, 100%, 55%, .02) 50%, hsla(270, 100%, 45%, 0) 80%)"
+        gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .06) 0, hsla(270, 100%, 55%, .02) 80%, transparent 100%)"
+        gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(270, 100%, 85%, .04) 0, hsla(270, 100%, 45%, .02) 80%, transparent 100%)"
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center min-h-screen py-16">
+          <div className="w-full max-w-xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                ease: "easeOut",
+              }}
+            >
+              <AuthTabs />
+            </motion.div>
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 } 

@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 // This helps with SSR where window/localStorage isn't available initially
 const getAPIClient = (ctx = undefined): AxiosInstance => {
   const api = axios.create({
-    baseURL: 'https://timeline-app-backend.vercel.app/api/',
+    // baseURL: 'https://timeline-app-backend.vercel.app/api/',
+    baseURL: 'http://localhost:5000/api/',
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',

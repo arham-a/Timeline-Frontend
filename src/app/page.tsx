@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from './components/LoadingSpinner';
 import Footer from './components/Footer';
 import { FeatureCard } from './components/ui/FeatureCard';
-import { Clock, Code, Compass, Plus, Users, TrendingUp, ArrowRight, Sparkles, Zap, Target } from "lucide-react";
+import { Code, Users, TrendingUp, ArrowRight, Sparkles, Zap, Target } from "lucide-react";
 import { Boxes } from './components/ui/background-boxes';
 
 const containerVariants = {
@@ -177,53 +177,23 @@ export default function HomePage() {
             >
               <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}>
                 <FeatureCard
-                  title="CREATE & CUSTOMIZE"
-                  description="Build mind-blowing, interactive timelines with custom segments, epic milestones, and crushing goals."
-                  icon={<Plus className="w-7 h-7 sm:w-8 sm:h-8 text-white" />}
-                  spotlightColor="rgba(37,99,235,0.35)"
-                  textColor="text-blue-600"
-                  iconBgColor="bg-blue-600"
-                  borderColor='border-blue-600'
-                  points={[
-                    { color: "bg-cyan-400", text: "Custom templates" },
-                    { color: "bg-blue-500", text: "Interactive elements" },
-                    { color: "bg-purple-400", text: "Rich media support" },
-                    { color: "bg-pink-400", text: "Goal tracking" },
-                  ]}
+                  title="FORK PUBLIC TIMELINES"
+                  description="Clone and customize existing public timelines for your own use. Build on the work of others and make it your own. Save time on setup and learn from the community's best practices."
+                  icon={<Code className="w-8 h-8 sm:w-10 sm:h-10 text-white" />}
                 />
               </motion.div>
               <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}>
                 <FeatureCard
-                  title="COLLABORATE & SHARE"
-                  description="Share your masterpieces with the world and collaborate with your team in real-time like never before."
-                  icon={<Users className="w-7 h-7 sm:w-8 sm:h-8 text-white" />}
-                  spotlightColor="rgba(168,85,247,0.35)"
-                  textColor="text-purple-600"
-                  iconBgColor="bg-purple-600"
-                  borderColor='border-purple-600'
-                  points={[
-                    { color: "bg-cyan-400", text: "Team collaboration" },
-                    { color: "bg-blue-500", text: "Public sharing" },
-                    { color: "bg-purple-400", text: "Real-time updates" },
-                    { color: "bg-pink-400", text: "Comment system" },
-                  ]}
+                  title="PROGRESS TRACKING"
+                  description="Monitor your learning progress with detailed analytics and visual dashboards. Track completion rates, celebrate milestones, and stay motivated throughout your entire journey."
+                  icon={<TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white" />}
                 />
               </motion.div>
               <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}>
                 <FeatureCard
-                  title="TRACK & PROGRESS"
-                  description="Monitor your empire's growth, smash through milestones, and achieve legendary status with precision tracking."
-                  icon={<TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 text-white" />}
-                  spotlightColor="rgba(34,197,94,0.35)"
-                  textColor="text-green-600"
-                  iconBgColor="bg-green-600"
-                  borderColor='border-green-600'
-                  points={[
-                    { color: "bg-green-400", text: "Progress tracking" },
-                    { color: "bg-emerald-400", text: "Milestone alerts" },
-                    { color: "bg-teal-400", text: "Analytics dashboard" },
-                    { color: "bg-cyan-400", text: "Goal completion" },
-                  ]}
+                  title="SHARE & COLLABORATE"
+                  description="Share your timelines with the world and collaborate with others in real-time. Build a thriving community around your learning paths and get valuable feedback from peers."
+                  icon={<Users className="w-8 h-8 sm:w-10 sm:h-10 text-white" />}
                 />
               </motion.div>
             </motion.div>

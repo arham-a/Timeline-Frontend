@@ -29,6 +29,7 @@ import { HoverBorderGradient } from "../../components/ui/hover-border-gradient";
 import { Boxes } from "@/app/components/ui/background-boxes";
 import TimelineInfoCard from '../../components/ui/TimelineInfoCard';
 import TimelineSegmentCard from '../../components/ui/TimelineSegmentCard';
+import toast from 'react-hot-toast';
 
 interface TimelineType {
   id: string;
@@ -143,7 +144,7 @@ export default function TimelinePage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>
       </>
@@ -154,8 +155,8 @@ export default function TimelinePage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[var(--color-bg-purple-50)] pt-16 flex items-center justify-center">
-          <div className="text-red-600">{error || "Timeline not found"}</div>
+        <div className="min-h-screen bg-black/[0.96] pt-16 flex items-center justify-center">
+          <div className="text-red-400">{error || "Timeline not found"}</div>
         </div>
       </>
     );
@@ -188,29 +189,31 @@ export default function TimelinePage() {
 
   const RenderCreateButton = () => {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center py-12">
-          <h3 className="mb-6 text-4xl font-medium text-white">
+      <div className="w-full bg-black/[0.96] relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12 sm:py-16">
+          <h3 className="mb-4 text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
             NO SEGMENTS
           </h3>
-          <div className="mt-5 text-sm text-gray-500">
+          <div className="mt-3 text-sm sm:text-base text-gray-400">
             Get started by adding segments.
           </div>
-          <div className="mt-4 flex flex-col items-center sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="mt-8 flex flex-col items-center sm:flex-row sm:justify-center gap-4">
             <button
               onClick={() => setRenderSegmentForm(true)}
-              className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-300"
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               Add Segments Manually
             </button>
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-300"
             >
               <SparklesIcon className="h-5 w-5 mr-2" />
               Generate with AI
             </button>
+            </div>
           </div>
         </div>
       </div>
@@ -336,12 +339,12 @@ export default function TimelinePage() {
     };
 
     return (
-      <div className="bg-gradient-to-br from-neutral-900 via-neutral-950 to-purple-950 border border-cyan-900/40 shadow-xl rounded-2xl p-8 mt-4 mb-8 max-w-7xl mx-auto relative z-20">
-        <h2 className="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent mb-6">
+      <div className="bg-black/50 border border-purple-500/20 shadow-xl rounded-2xl p-6 sm:p-8 mt-4 mb-8 max-w-7xl mx-auto relative z-20">
+        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-6">
           Create Timeline Segments
         </h2>
         {error && (
-          <div className="bg-red-900/20 text-red-400 p-4 rounded-xl mb-6 border border-red-500/30">
+          <div className="bg-red-500/10 text-red-400 p-4 rounded-lg mb-6 border border-red-500/20">
             {error}
           </div>
         )}
@@ -349,7 +352,7 @@ export default function TimelinePage() {
           {segmentForms.map((segment, segmentIndex) => (
             <div
               key={segmentIndex}
-              className="border border-cyan-900/40 rounded-xl p-6 space-y-6 bg-gradient-to-br from-neutral-950 via-black/80 to-purple-950/80 shadow-lg "
+              className="border border-purple-500/20 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6 bg-black/30 shadow-lg"
             >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-bold text-white">
@@ -418,7 +421,7 @@ export default function TimelinePage() {
                   <button
                     type="button"
                     onClick={() => addGoal(segmentIndex)}
-                    className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] p-2 hover:bg-[var(--color-primary-light)] rounded-full transition-colors"
+                    className="text-purple-400 hover:text-purple-300 p-2 hover:bg-purple-500/10 rounded-full transition-colors"
                   >
                     <PlusIcon className="h-5 w-5" />
                   </button>
@@ -456,7 +459,7 @@ export default function TimelinePage() {
                   <button
                     type="button"
                     onClick={() => addReference(segmentIndex)}
-                    className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] p-2 hover:bg-[var(--color-primary-light)] rounded-full transition-colors"
+                    className="text-purple-400 hover:text-purple-300 p-2 hover:bg-purple-500/10 rounded-full transition-colors"
                   >
                     <PlusIcon className="h-5 w-5" />
                   </button>
@@ -485,27 +488,27 @@ export default function TimelinePage() {
             </div>
           ))}
 
-          <div className="pt-6 border-t border-cyan-900/40 flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 sm:space-x-4">
+          <div className="pt-6 border-t border-purple-500/20 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <button
               type="button"
               onClick={addSegment}
-              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={segmentForms.length >= maxSegments}
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               Add Segment
             </button>
-            <div className="flex flex-col items-center w-full sm:w-auto space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+            <div className="flex flex-col w-full sm:w-auto gap-4 sm:flex-row">
               <button
                 type="button"
                 onClick={() => setRenderSegmentForm(false)}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl border border-cyan-900/40 bg-black/40 text-gray-200 font-semibold hover:bg-cyan-900/20 transition-colors"
+                className="w-full sm:w-auto px-6 py-3 rounded-lg border border-purple-500/20 bg-black/50 text-gray-200 font-semibold hover:bg-purple-500/10 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300"
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-300"
               >
                 Save All Segments
               </button>
@@ -674,15 +677,8 @@ export default function TimelinePage() {
 
   const RenderTimeline = () => {
     return (
-      <div className="min-h-screen text-white overflow-hidden relative pt-16">
-        {/* Animated/gradient background like home/explore */}
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-black to-purple-950"></div>
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-900/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-900/40 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-900/40 to-transparent rounded-full"></div>
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 pt-16 pb-12">
+      <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] text-white overflow-hidden relative">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-36 md:pt-40 pb-12">
           <TimelineInfoCard
             timeline={timeline}
             user={user}
@@ -699,11 +695,12 @@ export default function TimelinePage() {
   const RenderSegments = () => {
     if (!segments) return null;
     return (
-      <div className="max-w-7xl mx-auto p-6 z-10 relative">
-        {/* Desktop Timeline View */}
-        <div className="hidden md:block relative">
-          {/* Vertical line connecting timeline points */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[var(--color-primary-light)] to-[var(--color-primary)]" />
+      <div className="w-full bg-black/[0.96] py-6 z-10 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Desktop Timeline View */}
+          <div className="hidden md:block relative">
+            {/* Vertical line connecting timeline points */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-purple-500/50 to-purple-600" />
           <div className="space-y-16">
             {segments.map((segment, index) => (
               <TimelineSegmentCard
@@ -719,24 +716,25 @@ export default function TimelinePage() {
                 }}
               />
             ))}
+            </div>
           </div>
-        </div>
-        {/* Mobile Timeline View */}
-        <div className="md:hidden space-y-6">
-          {segments.map((segment, index) => (
-            <TimelineSegmentCard
-              key={segment.id}
-              segment={segment}
-              timeline={timeline}
-              user={user}
-              params={params}
-              index={index}
-              isDesktop={false}
-              onSegmentUpdate={(updatedSegment) => {
-                setSegments((prev) => prev && prev.map(s => s.id === updatedSegment.id ? updatedSegment : s));
-              }}
-            />
-          ))}
+          {/* Mobile Timeline View */}
+          <div className="md:hidden space-y-6">
+            {segments.map((segment, index) => (
+              <TimelineSegmentCard
+                key={segment.id}
+                segment={segment}
+                timeline={timeline}
+                user={user}
+                params={params}
+                index={index}
+                isDesktop={false}
+                onSegmentUpdate={(updatedSegment) => {
+                  setSegments((prev) => prev && prev.map(s => s.id === updatedSegment.id ? updatedSegment : s));
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -769,22 +767,35 @@ export default function TimelinePage() {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setIsGenerating(true);
+      setError(null);
+      
       try {
+        console.log("Generating segments with data:", formData);
         const data = await timelineService.generateSegments(
           params.id as string,
           formData
         );
-        setSegments(data || []);
-        setShowGenerateModal(false);
-        setFormData({
-          goal: "",
-          domain: "",
-          skillLevel: "",
-          targetAudience: "",
-        });
-      } catch (error) {
+        
+        console.log("Received segments:", data);
+        
+        if (data && data.length > 0) {
+          setSegments(data);
+          setShowGenerateModal(false);
+          setFormData({
+            goal: "",
+            domain: "",
+            skillLevel: "",
+            targetAudience: "",
+          });
+          toast.success(`Successfully generated ${data.length} segments!`);
+        } else {
+          toast.error("No segments were generated. Please try again.");
+        }
+      } catch (error: any) {
         console.error("Error generating segments:", error);
-        setError("Failed to generate segments");
+        const errorMessage = error.response?.data?.message || error.message || "Failed to generate segments";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsGenerating(false);
       }
@@ -800,13 +811,13 @@ export default function TimelinePage() {
       >
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="mx-auto max-w-md w-full rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-950 to-purple-950/90 border border-cyan-900/40 shadow-2xl p-8">
-            <Dialog.Title className="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent mb-4">
+          <Dialog.Panel className="mx-auto max-w-md w-full rounded-2xl bg-black/90 border border-purple-500/20 shadow-2xl p-6 sm:p-8">
+            <Dialog.Title className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-4">
               Generate Segments with AI
             </Dialog.Title>
             {isGenerating ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
                 <p className="text-gray-300">
                   Generating segments... This may take a few moments.
                 </p>
@@ -821,7 +832,7 @@ export default function TimelinePage() {
                     type="text"
                     value={formData.goal}
                     onChange={(e) => handleChange("goal", e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-cyan-900/40 bg-black/40 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors backdrop-blur"
+                    className="w-full px-4 py-2 rounded-lg border border-purple-500/20 bg-black/50 text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
                     required
                     placeholder="What do you want to achieve?"
                   />
@@ -835,7 +846,7 @@ export default function TimelinePage() {
                     type="text"
                     value={formData.domain}
                     onChange={(e) => handleChange("domain", e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-cyan-900/40 bg-black/40 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors backdrop-blur"
+                    className="w-full px-4 py-2 rounded-lg border border-purple-500/20 bg-black/50 text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
                     required
                     placeholder="e.g., Web Development, Data Science"
                   />
@@ -867,7 +878,7 @@ export default function TimelinePage() {
                     type="text"
                     value={formData.targetAudience}
                     onChange={(e) => handleChange("targetAudience", e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-cyan-900/40 bg-black/40 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors backdrop-blur"
+                    className="w-full px-4 py-2 rounded-lg border border-purple-500/20 bg-black/50 text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
                     required
                     placeholder="Who is this timeline for?"
                   />
@@ -877,13 +888,13 @@ export default function TimelinePage() {
                   <button
                     type="button"
                     onClick={() => setShowGenerateModal(false)}
-                    className="px-4 py-2 rounded-xl border border-cyan-900/40 bg-black/40 text-gray-200 font-semibold hover:bg-cyan-900/20 transition-colors"
+                    className="px-4 py-2 rounded-lg border border-purple-500/20 bg-black/50 text-gray-200 font-semibold hover:bg-purple-500/10 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-all duration-300"
+                    className="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-300"
                   >
                     Generate Segments
                   </button>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, ReactNode, MouseEvent } from "react";
+import Link from "next/link";
+import { Home } from "lucide-react";
 
 // Aceternity UI inspired components
 interface ChildrenProps {
@@ -186,6 +188,13 @@ export default function GuidePage() {
       `}</style>
       
       <FloatingNav navItems={navItems} />
+
+      {/* Fixed Home Button */}
+      <Link href="/">
+        <button className="fixed bottom-8 right-8 z-50 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:shadow-[0_0_50px_rgba(168,85,247,0.7)] transition-all duration-300 hover:scale-110 flex items-center justify-center group">
+          <Home className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:scale-110 transition-transform" />
+        </button>
+      </Link>
 
       {/* Hero Section */}
       <BackgroundGradient className="min-h-screen flex items-center justify-center px-4">

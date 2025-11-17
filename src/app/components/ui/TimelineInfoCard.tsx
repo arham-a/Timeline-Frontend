@@ -1,8 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { HoverBorderGradient } from './hover-border-gradient';
-import { BackgroundLines } from './background-lines';
 import { ClockIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { mapTimelineTypeToMessage } from '@/app/utils/mapTimelineTypeToMessage';
 import React, { Dispatch, SetStateAction } from 'react';
@@ -63,13 +61,12 @@ export default function TimelineInfoCard(props: TimelineInfoCardProps) {
   const { timeline, user, setIsForkModalOpen, isForkModalOpen, handleFork, forkError } = props;
 
   return (
-    <HoverBorderGradient containerClassName="rounded-3xl w-full" as="div" className="w-full">
-      <BackgroundLines className="rounded-3xl bg-gradient-to-br from-neutral-800/90 to-neutral-900/90 p-0 overflow-hidden">
-        <div className="relative z-20 w-full max-w-4xl mx-auto flex flex-col items-center justify-center px-4 py-6">
-          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent leading-tight tracking-tight text-center mb-4">
+    <div className="w-full">
+      <div className="relative z-20 w-full max-w-4xl mx-auto flex flex-col items-center justify-center px-4 py-6">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent leading-tight tracking-tight text-center mb-4">
             {timeline.title}
           </h1>
-          <p className="text-base xs:text-lg sm:text-xl text-gray-200 max-w-2xl font-light mt-2 text-center mb-4">
+          <p className="text-base xs:text-lg sm:text-xl text-gray-300 max-w-2xl font-light mt-2 text-center mb-4">
             {timeline.description}
           </p>
           {timeline.isForked && timeline.forkDetails && (
@@ -81,51 +78,42 @@ export default function TimelineInfoCard(props: TimelineInfoCardProps) {
             </div>
           )}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-cyan-400 text-neutral-900/80 shadow-lg">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-purple-600 text-white shadow-lg">
               {getTypeIcon(timeline.type.type)}
               {timeline.type.type}
             </span>
             {user && user.id !== timeline.author.id && timeline.isPublic && (
               <button
                 onClick={() => setIsForkModalOpen(true)}
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white rounded-lg hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 transition-colors w-full sm:w-auto justify-center font-semibold shadow-md"
+                className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors w-full sm:w-auto justify-center font-semibold shadow-md"
               >
                 Fork Timeline
               </button>
             )}
           </div>
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-8 w-full">
-            {timeline.duration ? (
-              <div className="bg-white/10 rounded-lg px-4 sm:px-6 py-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <ClockIcon className="h-5 w-5 text-cyan-400" />
-                  <span className="text-gray-200">Duration</span>
-                </div>
-                <p className="text-base xs:text-lg sm:text-xl font-semibold text-white">
+          {/* Stats Grid - Redesigned */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 w-full">
+            {timeline.duration && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm">
+                <ClockIcon className="h-4 w-4 text-purple-400" />
+                <span className="text-sm text-gray-300">
                   {timeline.duration} {mapTimelineTypeToMessage(timeline.timeUnit?.code || '', timeline.duration > 1)}
-                </p>
+                </span>
               </div>
-            ) : null}
-            <div className="bg-white/10 rounded-lg px-4 sm:px-6 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <UserGroupIcon className="h-5 w-5 text-cyan-400" />
-                <span className="text-gray-200">Visibility</span>
-              </div>
-              <p className="text-base xs:text-lg sm:text-xl font-semibold text-white">
+            )}
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm">
+              <UserGroupIcon className="h-4 w-4 text-purple-400" />
+              <span className="text-sm text-gray-300">
                 {timeline.isPublic ? 'Public' : 'Private'}
-              </p>
+              </span>
             </div>
-            <div className="bg-white/10 rounded-lg px-4 sm:px-6 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <svg className="h-5 w-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span className="text-gray-200">Author</span>
-              </div>
-              <p className="text-base xs:text-lg sm:text-xl font-semibold text-white">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm">
+              <svg className="h-4 w-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className="text-sm text-gray-300">
                 {timeline?.author?.username}
-              </p>
+              </span>
             </div>
           </div>
           {/* Footer Section */}
@@ -150,35 +138,34 @@ export default function TimelineInfoCard(props: TimelineInfoCardProps) {
               </div>
             </div>
           </div>
-        </div>
-      </BackgroundLines>
+      </div>
       {/* Fork Modal */}
       <Dialog open={isForkModalOpen} onClose={() => setIsForkModalOpen(false)} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="mx-auto max-w-sm rounded-2xl bg-white p-6">
-            <Dialog.Title className="text-lg font-medium text-[var(--color-text-primary)]">
+          <Dialog.Panel className="mx-auto max-w-sm rounded-2xl bg-black/90 border border-purple-500/20 p-6">
+            <Dialog.Title className="text-lg font-medium text-white">
               Fork Timeline
             </Dialog.Title>
-            <Dialog.Description className="mt-2 text-sm text-[var(--color-text-secondary)]">
+            <Dialog.Description className="mt-2 text-sm text-gray-300">
               Are you sure you want to fork this timeline? You'll be able to modify your copy while keeping the original intact.
             </Dialog.Description>
             {forkError && (
-              <div className="mt-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+              <div className="mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
                 {forkError}
               </div>
             )}
             <div className="mt-6 flex justify-end gap-4">
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-purple-50)] transition-colors"
+                className="px-4 py-2 rounded-lg border border-purple-500/20 bg-black/50 text-gray-200 hover:bg-purple-500/10 transition-colors"
                 onClick={() => setIsForkModalOpen(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors"
+                className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
                 onClick={handleFork}
               >
                 Fork
@@ -187,6 +174,6 @@ export default function TimelineInfoCard(props: TimelineInfoCardProps) {
           </Dialog.Panel>
         </div>
       </Dialog>
-    </HoverBorderGradient>
+    </div>
   );
 } 

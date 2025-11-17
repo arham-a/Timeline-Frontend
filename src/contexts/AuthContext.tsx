@@ -63,7 +63,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn(email: string, password: string) {
     try {
-      setLoading(true);
       const response = await authService.login(email, password);
       
       if (!response.success) {
@@ -92,20 +91,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         throw new Error('An error occurred during login');
       }
-    } finally {
-      setLoading(false);
     }
   }
 
   async function signUp(fname: string, lname:string, email: string, password: string, username: string) {
     try {
-      setLoading(true);
-      await authService.register(fname, lname, email, password, username);
-      router.push('/auth');
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
+      const response = await authService.register(fname, lname, email, password, username);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Registration failed');
+      }
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      } else if (error.message) {
+        throw error;
+      } else {
+        throw new Error('An error occurred during registration');
+      }
     }
   }
 

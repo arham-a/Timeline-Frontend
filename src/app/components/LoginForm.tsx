@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/16/solid";
+import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from './LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -14,6 +14,7 @@ interface LoginFormProps {
 export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { signIn } = useAuth();
   const router = useRouter();
 
@@ -45,23 +46,23 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-4 sm:space-y-6 py-2 sm:py-4 rounded-2xl shadow-xl backdrop-blur-xl p-4 sm:p-8 w-[95%] sm:w-full">
-      <div className="text-center">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Welcome back</h2>
-        <p className="text-gray-400 text-xs sm:text-sm mt-1 sm:mt-2">Enter your credentials to access your account</p>
+    <div className="max-w-md mx-auto space-y-6 w-full">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-white mb-2">Welcome back</h2>
+        <p className="text-gray-400 text-sm">Enter your credentials to access your account</p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-sm sm:text-base font-medium text-blue-200">Email</label>
-          <div className="mt-1 relative">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2">
-              <EnvelopeIcon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400" />
+              <EnvelopeIcon className="h-5 w-5 text-purple-400" />
             </span>
             <input
               type="email"
               name="email"
               placeholder="m@example.com"
-              className="w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 bg-black/60 border border-blue-700 rounded-lg text-white text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
+              className="w-full pl-10 pr-4 py-2.5 bg-black/50 border border-purple-500/20 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               onChange={handleChange}
               required
             />
@@ -69,22 +70,33 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
         </div>
 
         <div>
-          <div className="flex justify-between items-center">
-            <label htmlFor="password" className="block text-sm sm:text-base font-medium text-blue-200">Password</label>
-            <a href="#" className="text-xs sm:text-sm text-cyan-400 hover:underline">Forgot password?</a>
+          <div className="flex justify-between items-center mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
+            <a href="#" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
           </div>
-          <div className="mt-1 relative">
+          <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2">
-              <LockClosedIcon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400" />
+              <LockClosedIcon className="h-5 w-5 text-purple-400" />
             </span>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="••••••••"
-              className="w-full pl-9 sm:pl-10 pr-10 py-2 sm:py-2.5 bg-black/60 border border-blue-700 rounded-lg text-white text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
+              className="w-full pl-10 pr-10 py-2.5 bg-black/50 border border-purple-500/20 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               onChange={handleChange}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -92,25 +104,25 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
           <input 
             id="remember" 
             type="checkbox" 
-            className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 border-blue-700 rounded" 
+            className="h-4 w-4 text-purple-500 border-purple-500/20 rounded bg-black/50 focus:ring-purple-500" 
           />
-          <label htmlFor="remember" className="text-xs sm:text-sm text-blue-300">Remember me</label>
+          <label htmlFor="remember" className="text-sm text-gray-400">Remember me</label>
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-500 text-white py-2 sm:py-2.5 rounded-xl font-semibold text-sm sm:text-base shadow-lg hover:from-cyan-400 hover:via-blue-500 hover:to-purple-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? <LoadingSpinner size="sm" /> : "Login"}
         </button>
 
-        <p className="text-center text-xs sm:text-sm text-gray-400">
+        <p className="text-center text-sm text-gray-400 pt-2">
           Don't have an account?{" "}
           <button 
             type="button"
             onClick={onSwitchToSignup}
-            className="text-cyan-400 hover:underline font-semibold"
+            className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
           >
             Sign up
           </button>

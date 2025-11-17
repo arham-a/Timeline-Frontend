@@ -202,7 +202,12 @@ export const timelineService = {
 
   generateSegments: async (timelineId: string, data: GenerateSegmentRequest): Promise<Segment[]> => {
     try {
-      const response = await api.post<Segment[]>(`/segment/generate/${timelineId}`, data);
+      const response = await api.post<any>(`/segment/generate/${timelineId}`, data);
+      console.log('Generate segments response:', response.data);
+      // The backend returns { success: true, data: segments[], message: string }
+      if (response.data && response.data.data) {
+        return response.data.data;
+      }
       return response.data;
     } catch (error) {
       console.error('Error generating segments:', error);

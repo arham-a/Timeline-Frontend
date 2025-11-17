@@ -51,9 +51,23 @@ export const authService = {
   async register(fname: string, lname: string, email: string, password: string, username: string): Promise<AuthResponse> {
     try {
       const response = await api.post<AuthResponse>('/auth/register', { fname, lname, email, password, username });
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Registration failed');
+      }
+      
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      } else if (error.message) {
+        throw error;
+      } else {
+        throw new Error('Failed to register. Please try again.');
+      }
     }
   },
   
